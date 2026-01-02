@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": null,
+  "monorepo": {
+    "apps": [
+      {
+        "name": "frontend",
+        "path": "apps/frontend",
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist",
+        "devCommand": "npm run dev",
+        "framework": "vite"
+      },
+      {
+        "name": "uai-server",
+        "path": "apps/uai-server",
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist",
+        "devCommand": "npm run dev"
+      },
+      {
+        "name": "api-db",
+        "path": "apps/api-db",
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist",
+        "devCommand": "npm run dev"
+      }
+    ]
+  }
+}
