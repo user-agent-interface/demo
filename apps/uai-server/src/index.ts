@@ -1,8 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
+import serverless from "serverless-http";
 import { uaiAgent } from "./agent";
 
-dotenv.config();
+// Read .env.local variables in LOCAL
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: ".env.local" });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -40,4 +44,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Export for Vercel serverless in deployment
-export default app;
+export default serverless(app);
