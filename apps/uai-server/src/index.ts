@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import serverless from "serverless-http";
-import { uaiAgent } from "./agent";
+import { uaiAgent } from "./agent.js";
 
 // Read .env.local variables in LOCAL
 if (process.env.NODE_ENV !== "production") {
@@ -37,11 +36,9 @@ app.post("/api/uai-server", async (req, res) => {
 });
 
 // Start server in LOCAL
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`🚀 UAI-Server running on http://localhost:${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`🚀 UAI-Server running on http://localhost:${PORT}`);
+});
 
 // Export for Vercel serverless in deployment
-export default serverless(app);
+export default app;
