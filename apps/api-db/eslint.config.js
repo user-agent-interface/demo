@@ -1,25 +1,17 @@
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
+import baseConfig from "../../eslint.config.js";
 import importPlugin from "eslint-plugin-import";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
-export default tseslint.config(
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    plugins: {
-      import: importPlugin,
-    },
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "module",
-      globals: {
-        ...globals.node,
-      },
-    },
-    rules: { "import/extensions": ["error", "always"] },
+export default tseslint.config(...baseConfig, {
+  plugins: {
+    import: importPlugin,
   },
-  {
-    ignores: ["dist/**", "node_modules/**"],
-  }
-);
+  languageOptions: {
+    ecmaVersion: 2022,
+    globals: {
+      ...globals.node,
+    },
+  },
+  rules: { "import/extensions": ["error", "always"] },
+});
