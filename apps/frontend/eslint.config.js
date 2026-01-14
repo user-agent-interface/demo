@@ -15,6 +15,9 @@ export default tseslint.config(...baseConfig, {
       ...globals.browser,
       ...globals.es2020,
     },
+    parserOptions: {
+      tsconfigRootDir: import.meta.dirname,
+    },
   },
   rules: {
     ...reactHooks.configs.recommended.rules,

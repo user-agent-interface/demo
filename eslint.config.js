@@ -7,6 +7,9 @@ export default tseslint.config(
   {
     languageOptions: {
       sourceType: "module",
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     rules: {
       "@typescript-eslint/no-unused-vars": [
