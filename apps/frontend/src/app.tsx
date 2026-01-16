@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { ChatMessages } from "./components/chat-messages";
 import { ChatHeader } from "./components/header";
 import { Message } from "./components/message";
+import { ChatInput } from "./components/chat-input";
 
 const initialMessages: Message[] = [
   {
@@ -49,6 +50,9 @@ export function App() {
           <div className="flex-1 overflow-hidden">
             <ChatMessages messages={messages} isTyping={isTyping} />
           </div>
+
+          {/* Chat Input */}
+          <ChatInput onSendMessage={handleSendMessage} isTyping={isTyping} />
         </div>
       </div>
     </main>
