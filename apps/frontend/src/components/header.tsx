@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Menu, Truck, Wifi, Shield, Settings } from "lucide-react";
-import { Button } from "@/components/atoms/button";
+import { Button } from "@/ui/button";
 
 export function ChatHeader() {
   const [isOnline] = useState(true);

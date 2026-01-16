@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { Send, Paperclip, Mic, Sparkles } from "lucide-react";
-import { Button } from "@/components/atoms/button";
+import { Button } from "@/ui/button";
 import { cn } from "@/utils/cn";
 
 export function ChatInput({
