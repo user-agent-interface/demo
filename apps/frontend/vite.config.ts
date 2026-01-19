@@ -23,6 +23,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/db/, ""),
       },
+      "/api/uai-server": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
     },
   },
 });

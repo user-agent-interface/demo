@@ -9,7 +9,7 @@ export function ChatInput({
   onSendMessage,
   isTyping,
 }: {
-  onSendMessage: (content: string) => void;
+  onSendMessage: (text: string) => void;
   isTyping: boolean;
 }) {
   const [input, setInput] = useState("");
@@ -41,10 +41,8 @@ export function ChatInput({
   };
 
   const suggestions = [
-    "Analyze data patterns",
-    "Generate a report",
-    "Explain quantum computing",
-    "Optimize my workflow",
+    "Delete product",
+    "What can you do?"
   ];
 
   return (

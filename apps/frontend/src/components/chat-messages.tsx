@@ -1,19 +1,18 @@
 import { cn } from "@/utils/cn";
-import type { Message } from "./message";
-import { Bot, User, Loader2 } from "lucide-react";
+import { Bot, User } from "lucide-react";
+import { UIMessage } from "./ui-message";
 
-interface ChatMessagesProps {
-  messages: Message[];
+export function ChatMessages({ messages, isTyping }: {
+  messages: UIMessage[];
   isTyping: boolean;
-}
-
-export function ChatMessages({ messages, isTyping }: ChatMessagesProps) {
+}) {
   return (
     <div className="h-full overflow-y-auto px-4 py-6">
       <div className="mx-auto max-w-3xl space-y-6">
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
-        ))}
+        {messages.map((message) => message.parts.some((part) => part.type === "text")
+        ? (<MessageBubble key={message.id} message={message} />)
+        // Still waiting for the text parts
+        : (<TypingIndicator key={message.id} />))}
 
         {isTyping && <TypingIndicator />}
       </div>
@@ -21,7 +20,7 @@ export function ChatMessages({ messages, isTyping }: ChatMessagesProps) {
   );
 }
 
-function MessageBubble({ message }: { message: Message }) {
+function MessageBubble({ message }: { message: UIMessage }) {
   const isAssistant = message.role === "assistant";
 
   return (
@@ -46,7 +45,7 @@ function MessageBubble({ message }: { message: Message }) {
         )}
       >
         <p className="whitespace-pre-wrap text-sm leading-relaxed">
-          {message.content}
+          {message.parts.map((part) => part.type === "text" ? part.text : null).join("")}
         </p>
         <p
           className={cn(
@@ -54,7 +53,7 @@ function MessageBubble({ message }: { message: Message }) {
             isAssistant ? "text-muted-foreground" : "text-primary-foreground/70"
           )}
         >
-          {formatTime(message.timestamp)}
+          {formatTime(message.metadata?.timestamp)}
         </p>
       </div>
 
@@ -74,10 +73,6 @@ function TypingIndicator() {
         <Bot className="h-4 w-4 text-primary" />
       </div>
       <div className="flex items-center gap-2 rounded-2xl rounded-tl-sm bg-card border border-border/50 px-4 py-3">
-        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">
-          Processing
-        </span>
         <span className="flex gap-1">
           {[0, 1, 2].map((i) => (
             <span
@@ -92,10 +87,10 @@ function TypingIndicator() {
   );
 }
 
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString("en-US", {
+function formatTime(date?: string) {
+  return date ? new Date(date).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-  });
+  }) : null;
 }

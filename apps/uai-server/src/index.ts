@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { uaiAgent } from "./agent.js";
+import { convertToModelMessages } from "ai";
 
 // Read .env.local variables in LOCAL
 if (process.env.NODE_ENV !== "production") {
@@ -22,17 +23,23 @@ app.get("/health", (_req, res) => {
 });
 
 app.post("/api/uai-server", async (req, res) => {
-  const { prompt, messages } = req.body;
-  if (!prompt && !messages) {
-    return res.status(400).json({ error: "prompt or messages is required" });
+  const { messages } = req.body;
+  if (!messages) {
+    return res.status(400).json({ error: "messages is required" });
   }
 
-  const result = await uaiAgent.generate({
-    messages,
-    prompt,
+  const stream = await uaiAgent.stream({
+    messages: await convertToModelMessages(messages),
   });
 
-  return res.json(result);
+  return stream.pipeUIMessageStreamToResponse(res, {messageMetadata: ({ part }) => {
+    // Attach timestamp when a message starts
+    if (part.type === "start") {
+      return { timestamp: new Date().toISOString() };
+    }
+    // You can also add metadata on finish if needed
+    return undefined;
+  }});
 });
 
 // Start server in LOCAL

@@ -1,29 +1,32 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { ChatMessages } from "./components/chat-messages";
 import { ChatHeader } from "./components/header";
-import { Message } from "./components/message";
 import { ChatInput } from "./components/chat-input";
-
-const initialMessages: Message[] = [
-  {
-    id: "1",
-    role: "assistant",
-    content:
-      "NEURAL INTERFACE INITIALIZED\n\nGreetings, Operator. I am NEXUS-7, your advanced AI companion. My neural networks are fully operational and ready to assist with any query or task you require.\n\nHow may I be of service today?",
-    timestamp: new Date(Date.now() - 60000),
-  },
-];
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { UIMessage } from "./components/ui-message";
 
 export function App() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [isTyping, setIsTyping] = useState(false);
+  // Define backend endpoint using transport.api prop
+  const {messages, sendMessage, status} = useChat<UIMessage>({
+    transport: new DefaultChatTransport({ api: '/api/uai-server' }),
+    messages: [{metadata: {timestamp: new Date().toISOString()}, id: "initial", role: "assistant", parts: [{type: "text", text: "Greetings, Operator!\nI am your advanced agent, ready to assist with any query or task you require.\n\nHow may I be of service today?"}]}],
+    onToolCall: (toolCall) => {
+      console.log("toolCall", toolCall);
+    }
+  });
 
-  const handleSendMessage = useCallback(async (content: string) => {
-    console.log("Sending message:", content);
-  }, []);
+  const isTyping = status === "submitted"; // waiting for stream to start
+
+  const handleSendMessage = useCallback(async (text: string) => {
+    await sendMessage({
+      parts: [{type: "text", text}],
+      metadata: {timestamp: new Date().toISOString()},
+    });
+  }, [sendMessage]);
 
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden">
+    <main className="min-h-dvh bg-background relative">
       {/* Grid background */}
       <div
         className="pointer-events-none fixed inset-0 opacity-[0.03]"

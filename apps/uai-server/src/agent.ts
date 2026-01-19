@@ -3,6 +3,15 @@ import { z } from "zod";
 
 export const uaiAgent = new ToolLoopAgent({
   model: "openai/gpt-4o-mini",
+  instructions: `
+    You are a helpful assistant.
+    Use tools proactively to accomplish user goals,
+    try to avoid asking the user for params that can be obtained via other tools.
+
+    Tool parameter rules:
+    - Get required params from other tools when possible; only ask the user as a last resort.
+    - Omit optional params when not provided; never invent defaults.
+    - Never fabricate or guess parameter values.`,
   tools: {
     productSelector: tool({
       description: "Select a product from the list of products",
