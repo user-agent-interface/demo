@@ -6,10 +6,11 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { UIMessage } from "./components/ui-message";
 
+const uaiServerUrl = `${import.meta.env.VITE_UAI_SERVER_HOST_URL}/api/uai-server`;
+
 export function App() {
-  // Define backend endpoint using transport.api prop
   const {messages, sendMessage, status} = useChat<UIMessage>({
-    transport: new DefaultChatTransport({ api: '/api/uai-server' }),
+    transport: new DefaultChatTransport({ api: uaiServerUrl }),
     messages: [{metadata: {timestamp: new Date().toISOString()}, id: "initial", role: "assistant", parts: [{type: "text", text: "Greetings, Operator!\nI am your advanced agent, ready to assist with any query or task you require.\n\nHow may I be of service today?"}]}],
     onToolCall: (toolCall) => {
       console.log("toolCall", toolCall);

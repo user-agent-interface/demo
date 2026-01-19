@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import { uaiAgent } from "./agent.js";
 import { convertToModelMessages } from "ai";
@@ -11,6 +12,8 @@ if (process.env.NODE_ENV !== "production") {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Middleware
+app.use(cors());
 app.use(express.json());
 
 // Routes

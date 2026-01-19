@@ -11,22 +11,6 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
-    proxy: {
-      "/api/llm": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/llm/, ""),
-      },
-      "/api/db": {
-        target: "http://localhost:3002",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/db/, ""),
-      },
-      "/api/uai-server": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-    },
+    port: 5173
   },
 });
