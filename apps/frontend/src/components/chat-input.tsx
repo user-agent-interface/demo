@@ -41,7 +41,7 @@ export function ChatInput({
   };
 
   const suggestions = [
-    "Delete product",
+    "show me the delayed shipments",
     "What can you do?"
   ];
 
