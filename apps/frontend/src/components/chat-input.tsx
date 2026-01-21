@@ -46,7 +46,7 @@ export function ChatInput({
   ];
 
   return (
-    <div className="border-t border-border/50 bg-card/50 backdrop-blur-sm p-4">
+    <div className="border-t border-border/50 bg-card/50 backdrop-blur-sm p-4 pb-2">
       <div className="mx-auto max-w-3xl">
         {/* Quick Suggestions */}
         <div className="mb-3 flex flex-wrap gap-2">

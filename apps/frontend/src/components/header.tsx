@@ -39,7 +39,7 @@ export function ChatHeader() {
       </div>
 
       {/* Status Indicators */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center">
         <div className="hidden sm:flex items-center gap-4 mr-4">
           <StatusIndicator icon={Wifi} label="NETWORK" active={isOnline} />
           <StatusIndicator icon={Shield} label="SECURE" active />
