@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@uai/client": path.resolve(__dirname, "../uai-client/src/index.ts"),
     },
   },
   server: {

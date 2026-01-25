@@ -9,7 +9,10 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "allowJs": true
+    "baseUrl": ".",
+    "paths": {
+      "@uai/client": ["./apps/uai-client/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "dist", "build", ".next"]
 }

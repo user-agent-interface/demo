@@ -1,30 +1,43 @@
-import { useCallback } from "react";
-import { ChatMessages } from "./components/chat-messages";
-import { ChatHeader } from "./components/header";
-import { ChatInput } from "./components/chat-input";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
-import { UIMessage } from "./components/ui-message";
+import { useCallback } from 'react';
+import { ChatMessages } from './components/chat-messages';
+import { ChatHeader } from './components/header';
+import { ChatInput } from './components/chat-input';
+import { UIMessage } from './components/ui-message';
+import { useUai } from '@uai/client';
 
 const uaiServerUrl = `${import.meta.env.VITE_UAI_SERVER_HOST_URL}/api/uai-server`;
 
+const initialMessages: UIMessage[] = [
+  {
+    metadata: { timestamp: new Date().toISOString() },
+    id: 'initial',
+    role: 'assistant',
+    parts: [
+      {
+        type: 'text',
+        text: 'Greetings, Operator!\nI am your advanced agent, ready to assist with any query or task you require.\n\nHow may I be of service today?',
+      },
+    ],
+  },
+];
+
 export function App() {
-  const {messages, sendMessage, status} = useChat<UIMessage>({
-    transport: new DefaultChatTransport({ api: uaiServerUrl }),
-    messages: [{metadata: {timestamp: new Date().toISOString()}, id: "initial", role: "assistant", parts: [{type: "text", text: "Greetings, Operator!\nI am your advanced agent, ready to assist with any query or task you require.\n\nHow may I be of service today?"}]}],
-    onToolCall: (toolCall) => {
-      console.log("toolCall", toolCall);
-    }
+  const { messages, sendMessage, status } = useUai<UIMessage>({
+    uaiServerUrl,
+    initialMessages,
   });
 
-  const isTyping = status === "submitted"; // waiting for stream to start
+  const isTyping = status === 'submitted'; // waiting for stream to start
 
-  const handleSendMessage = useCallback(async (text: string) => {
-    await sendMessage({
-      parts: [{type: "text", text}],
-      metadata: {timestamp: new Date().toISOString()},
-    });
-  }, [sendMessage]);
+  const handleSendMessage = useCallback(
+    async (text: string) => {
+      await sendMessage({
+        parts: [{ type: 'text', text }],
+        metadata: { timestamp: new Date().toISOString() },
+      });
+    },
+    [sendMessage]
+  );
 
   return (
     <main className="min-h-dvh bg-background relative">
@@ -36,7 +49,7 @@ export function App() {
         linear-gradient(to right, currentColor 1px, transparent 1px),
         linear-gradient(to bottom, currentColor 1px, transparent 1px)
       `,
-          backgroundSize: "50px 50px",
+          backgroundSize: '50px 50px',
         }}
       />
 

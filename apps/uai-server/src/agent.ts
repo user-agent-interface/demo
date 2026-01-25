@@ -1,19 +1,21 @@
-import { asSchema, tool, ToolLoopAgent, ToolSet } from "ai";
-import { z } from "zod";
+import { tool, ToolLoopAgent, ToolSet } from 'ai';
+import { z } from 'zod';
 
 // Define the tools object separately so we can export its type
 const agentTools = {
   shipments: tool({
-    description: "Show shipments",
+    description: 'Show shipments',
     inputSchema: z.object({
-      displayType: z.enum(["map", "list"]).default("map"),
-      filter: z.enum(['inTransit', 'delayed', 'delivered']).default('inTransit'),
+      displayType: z.enum(['map', 'list']).default('map'),
+      filter: z
+        .enum(['inTransit', 'delayed', 'delivered'])
+        .default('inTransit'),
     }),
   }),
 } satisfies ToolSet;
 
 export const uaiAgent = new ToolLoopAgent({
-  model: "openai/gpt-4o-mini",
+  model: 'openai/gpt-4o-mini',
   instructions: `
     You are a helpful assistant for building UI on-demand.
     Use tools (UI components) proactively to accomplish user goals,
@@ -25,5 +27,3 @@ export const uaiAgent = new ToolLoopAgent({
     - Never fabricate or guess parameter values.`,
   tools: agentTools,
 });
-
-// console.log('hey', await asSchema(agentTools.shipments.inputSchema).validate?.({displayType: 'list'}));
