@@ -13,5 +13,5 @@ export default tseslint.config(...baseConfig, {
       ...globals.node,
     },
   },
-  rules: { "import/extensions": ["error", "always"] },
+  rules: { "import/extensions": ["error", "always"] }, // .js extensions in import is required for vercel serverless functions
 });
