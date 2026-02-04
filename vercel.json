@@ -8,7 +8,7 @@
       {
         "name": "frontend",
         "path": "apps/frontend",
-        "buildCommand": "npm run build",
+        "buildCommand": "cd ../.. && npx turbo run build --filter=@uai-demo/frontend",
         "outputDirectory": "dist",
         "devCommand": "npm run dev",
         "framework": "vite"
@@ -16,14 +16,14 @@
       {
         "name": "uai-server",
         "path": "apps/uai-server",
-        "buildCommand": "npm run build",
+        "buildCommand": "cd ../.. && npx turbo run build --filter=@uai-demo/uai-server",
         "outputDirectory": "dist",
         "devCommand": "npm run dev"
       },
       {
         "name": "api-db",
         "path": "apps/api-db",
-        "buildCommand": "npm run build",
+        "buildCommand": "cd ../.. && npx turbo run build --filter=@uai-demo/api-db",
         "outputDirectory": "dist",
         "devCommand": "npm run dev"
       }

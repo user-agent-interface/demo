@@ -22,9 +22,12 @@ This monorepo is configured for deployment on Vercel. Each app will be deployed 
    - Vercel will prompt you to configure each app separately
    - For each app, set:
      - **Root Directory**: Select the app directory (e.g., `apps/frontend`)
-     - **Build Command**: `npm run build`
-     - **Output Directory**: `dist` (or `.next` if using Next.js)
-     - **Install Command**: `npm install`
+     - **Build Command**: Use the Turbo filter so dependencies are built first:
+       - **Frontend**: `cd ../.. && npx turbo run build --filter=@uai-demo/frontend`
+       - **UAI-Server**: `cd ../.. && npx turbo run build --filter=@uai-demo/uai-server`
+       - **API-DB**: `cd ../.. && npx turbo run build --filter=@uai-demo/api-db`
+     - **Output Directory**: `dist`
+     - **Install Command**: `npm install` (Vercel runs this from the repo root for monorepos, so workspace dependencies like `@uai/client` are installed)
 
 3. **Set Environment Variables**
 
