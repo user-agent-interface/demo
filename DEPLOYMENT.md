@@ -1,6 +1,8 @@
 # Deployment Guide - Vercel
 
-This monorepo is configured for deployment on Vercel. Each app will be deployed as a separate service.
+This monorepo is configured for deployment on Vercel. Each app is deployed as a separate Vercel project.
+
+**Config:** There is one `vercel.json` per app (`apps/frontend/vercel.json`, `apps/uai-server/vercel.json`, `apps/api-db/vercel.json`). When you set a project’s Root Directory to an app (e.g. `apps/frontend`), Vercel uses that app’s `vercel.json` only—no root-level config.
 
 ## Prerequisites
 
@@ -19,15 +21,9 @@ This monorepo is configured for deployment on Vercel. Each app will be deployed 
 
 2. **Configure Each App**
 
-   - Vercel will prompt you to configure each app separately
-   - For each app, set:
-     - **Root Directory**: Select the app directory (e.g., `apps/frontend`)
-     - **Build Command**: Use the Turbo filter so dependencies are built first:
-       - **Frontend**: `cd ../.. && npx turbo run build --filter=@uai-demo/frontend`
-       - **UAI-Server**: `cd ../.. && npx turbo run build --filter=@uai-demo/uai-server`
-       - **API-DB**: `cd ../.. && npx turbo run build --filter=@uai-demo/api-db`
-     - **Output Directory**: `dist`
-     - **Install Command**: `npm install` (Vercel runs this from the repo root for monorepos, so workspace dependencies like `@uai/client` are installed)
+   - Create one Vercel project per app (frontend, uai-server, api-db)
+   - For each project, set **Root Directory** to the app folder (e.g. `apps/frontend`)
+   - Build command, output directory, and install command are read from that app’s `vercel.json` (they already use Turbo so workspace packages like `@uai/client` are built in the right order)
 
 3. **Set Environment Variables**
 

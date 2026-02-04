@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd ../.. && npx turbo run build --filter=@uai-demo/frontend",
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
