@@ -4,6 +4,10 @@ import {
   ChatOnFinishCallback,
   DefaultChatTransport,
 } from 'ai';
+import {
+  ComponentSet,
+  ComponentSetForServer,
+} from './component-map/component-map';
 
 type useUaiOptions<UI_MESSAGE extends UIMessage = UIMessage> = {
   /**
@@ -13,9 +17,14 @@ type useUaiOptions<UI_MESSAGE extends UIMessage = UIMessage> = {
   id?: string;
 
   /**
-   * The UAI Server API URL to be used for the chat transport.
+   * The UAI Server API URL to be used for the UAI chat transport.
    */
   uaiServerUrl: string;
+
+  /**
+   * The component map to be used for the UAI chat.
+   */
+  componentMap: ComponentSet;
 
   /**
    * Initial messages to be sent to the UAI Server API.
@@ -42,15 +51,34 @@ export const useUai = <UI_MESSAGE extends UIMessage = UIMessage>(
   sendMessage: UseChatHelpers<UI_MESSAGE>['sendMessage'];
   status: UseChatHelpers<UI_MESSAGE>['status'];
 } => {
+  // Define the UAI-specific useChat hook from the Vercel AI SDK
   const { id, messages, error, sendMessage, status } = useChat<UI_MESSAGE>({
     ...(options.id ? { id: options.id } : {}),
-    transport: new DefaultChatTransport({ api: options.uaiServerUrl }),
+    transport: new DefaultChatTransport({
+      api: options.uaiServerUrl,
+      prepareSendMessagesRequest: ({ messages, id }) => {
+        // remove the React Component and send the tool definition to the UAI server
+        const componentMapForServer: ComponentSetForServer = {};
+        Object.entries(options.componentMap).forEach(
+          ([componentKey, component]) => {
+            componentMapForServer[componentKey] = component.tool;
+          }
+        );
+
+        return {
+          body: {
+            messages,
+            id,
+            // Send the component map to the UAI server
+            componentMap: componentMapForServer,
+          },
+        };
+      },
+    }),
     messages: options.initialMessages,
     onError: options.onError,
     onFinish: options.onFinish,
   });
-
-  console.log('in', messages);
 
   return {
     id,

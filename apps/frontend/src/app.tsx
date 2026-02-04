@@ -4,6 +4,7 @@ import { ChatHeader } from './ui/header';
 import { ChatInput } from './ui/chat-input';
 import { UIMessage } from './ui/ui-message';
 import { useUai } from '@uai/client';
+import { componentMap } from './components/component-map';
 
 const uaiServerUrl = `${import.meta.env.VITE_UAI_SERVER_HOST_URL}/api/uai-server`;
 
@@ -24,6 +25,7 @@ const initialMessages: UIMessage[] = [
 export function App() {
   const { messages, sendMessage, status } = useUai<UIMessage>({
     uaiServerUrl,
+    componentMap,
     initialMessages,
   });
 
