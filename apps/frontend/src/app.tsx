@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { ChatMessages } from './components/chat-messages';
-import { ChatHeader } from './components/header';
-import { ChatInput } from './components/chat-input';
-import { UIMessage } from './components/ui-message';
+import { ChatMessages } from './ui/chat-messages';
+import { ChatHeader } from './ui/header';
+import { ChatInput } from './ui/chat-input';
+import { UIMessage } from './ui/ui-message';
 import { useUai } from '@uai/client';
 
 const uaiServerUrl = `${import.meta.env.VITE_UAI_SERVER_HOST_URL}/api/uai-server`;
