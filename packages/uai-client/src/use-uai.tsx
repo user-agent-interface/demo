@@ -1,13 +1,12 @@
 import { UIMessage, useChat, UseChatHelpers } from '@ai-sdk/react';
 import {
+  asSchema,
   ChatOnErrorCallback,
   ChatOnFinishCallback,
   DefaultChatTransport,
 } from 'ai';
-import {
-  ComponentSet,
-  ComponentSetForServer,
-} from './component-map/component-map';
+import type { ComponentMapForServer } from '@uai/shared';
+import { type ComponentMap } from './component-map/component-map';
 
 type useUaiOptions<UI_MESSAGE extends UIMessage = UIMessage> = {
   /**
@@ -24,7 +23,7 @@ type useUaiOptions<UI_MESSAGE extends UIMessage = UIMessage> = {
   /**
    * The component map to be used for the UAI chat.
    */
-  componentMap: ComponentSet;
+  componentMap: ComponentMap;
 
   /**
    * Initial messages to be sent to the UAI Server API.
@@ -56,12 +55,21 @@ export const useUai = <UI_MESSAGE extends UIMessage = UIMessage>(
     ...(options.id ? { id: options.id } : {}),
     transport: new DefaultChatTransport({
       api: options.uaiServerUrl,
-      prepareSendMessagesRequest: ({ messages, id }) => {
-        // remove the React Component and send the tool definition to the UAI server
-        const componentMapForServer: ComponentSetForServer = {};
+      prepareSendMessagesRequest: async ({ messages, id }) => {
+        // remove the only client-side objects (e.g. React components)
+        // convert the tool definition to an interpretable format for the UAI server (e.g. JSON schemas)
+        const componentMapForServer: ComponentMapForServer = {};
         Object.entries(options.componentMap).forEach(
-          ([componentKey, component]) => {
-            componentMapForServer[componentKey] = component.tool;
+          async ([componentKey, component]) => {
+            componentMapForServer[componentKey] = {
+              title: component.title,
+              description: component.description,
+              inputExamples: component.inputExamples,
+              inputSchema: await asSchema(component.inputSchema).jsonSchema,
+              outputSchema: component.outputSchema
+                ? await asSchema(component.outputSchema).jsonSchema
+                : undefined,
+            };
           }
         );
 
