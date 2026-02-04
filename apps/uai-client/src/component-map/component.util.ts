@@ -12,21 +12,20 @@ export type ComponentAsTool<
   // used by uai-server
   tool: Tool<INPUT, OUTPUT>;
   // used by uai-client
-  component: React.ComponentType<INPUT>
+  component: React.ComponentType<INPUT>;
 };
 
 export const component = <
   INPUT extends JSONObject | undefined = undefined,
   OUTPUT extends JSONObject | undefined = undefined,
 >(
-  component:
-    {
-      title?: string;
-      description?: string;
-      inputSchema?: ZodType<INPUT>;
-      inputExamples?: INPUT[];
-      outputSchema?: ZodType<OUTPUT>;
-    } & { component: React.ComponentType<INPUT> }
+  component: {
+    title?: string;
+    description?: string;
+    inputSchema?: ZodType<INPUT>;
+    inputExamples?: INPUT[];
+    outputSchema?: ZodType<OUTPUT>;
+  } & { component: React.ComponentType<INPUT> }
 ): ComponentAsTool<INPUT, OUTPUT> => {
   return {
     tool: tool({
@@ -37,7 +36,7 @@ export const component = <
       inputExamples: component.inputExamples,
       outputSchema: component.outputSchema,
 
-      // default tool properties for component
+      // default tool properties for uai component
       strict: true,
       supportsDeferredResults: true,
     } as Tool<INPUT, OUTPUT>),
