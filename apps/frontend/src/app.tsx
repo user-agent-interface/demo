@@ -2,28 +2,21 @@ import { useCallback } from 'react';
 import { ChatMessages } from './ui/chat-messages';
 import { ChatHeader } from './ui/header';
 import { ChatInput } from './ui/chat-input';
-import { UIMessage } from './ui/ui-message';
-import { useUai } from '@uai/client';
+import { useUai, defineInitialMessages } from '@uai/client';
 import { componentMap } from './components/component-map';
 
 const uaiServerUrl = `${import.meta.env.VITE_UAI_SERVER_HOST_URL}/api/uai-server`;
 
-const initialMessages: UIMessage[] = [
+const initialMessages = defineInitialMessages([
   {
-    metadata: { timestamp: new Date().toISOString() },
     id: 'initial',
     role: 'assistant',
-    parts: [
-      {
-        type: 'text',
-        text: 'Greetings, Operator!\nI am your advanced agent, ready to assist with any query or task you require.\n\nHow may I be of service today?',
-      },
-    ],
+    text: 'Greetings, Operator!\nI am your advanced agent, ready to assist with any query or task you require.\n\nHow may I be of service today?',
   },
-];
+]);
 
 export function App() {
-  const { messages, sendMessage, status } = useUai<UIMessage>({
+  const { messages, sendMessage, status } = useUai({
     uaiServerUrl,
     componentMap,
     initialMessages,
@@ -32,12 +25,7 @@ export function App() {
   const agentAnswerInProgress = status === 'submitted'; // waiting for stream to start
 
   const handleSendMessage = useCallback(
-    async (text: string) => {
-      await sendMessage({
-        parts: [{ type: 'text', text }],
-        metadata: { timestamp: new Date().toISOString() },
-      });
-    },
+    async (text: string) => await sendMessage(text),
     [sendMessage]
   );
 

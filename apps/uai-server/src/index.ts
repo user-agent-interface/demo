@@ -10,7 +10,7 @@ import {
   tool,
   jsonSchema,
 } from 'ai';
-import { ComponentMapForServer } from '@uai/shared';
+import { ComponentMapForServer, UIMessageMetadata } from '@uai/shared';
 
 // Read .env.local variables in LOCAL
 if (process.env.NODE_ENV !== 'production') {
@@ -42,6 +42,9 @@ app.post('/api/uai-server', async (req, res) => {
   if (!messages) {
     return res.status(400).json({ error: 'messages is required' });
   }
+  if (!componentMap) {
+    return res.status(400).json({ error: 'componentMap is required' });
+  }
 
   // Resolve Tools from the componentMap
   const tools: ToolSet = {};
@@ -72,11 +75,15 @@ app.post('/api/uai-server', async (req, res) => {
 
   return stream.pipeUIMessageStreamToResponse(res, {
     messageMetadata: ({ part }) => {
-      // Attach timestamp when a message starts
+      // Attach metadata when a message starts
       if (part.type === 'start') {
-        return { timestamp: new Date().toISOString() };
+        const metadata: UIMessageMetadata = {
+          timestamp: new Date().toISOString(),
+        };
+        return metadata;
       }
-      // You can also add metadata on finish if needed
+
+      // (You can also add metadata on finish if needed)
       return undefined;
     },
   });

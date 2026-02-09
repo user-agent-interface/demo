@@ -59,3 +59,7 @@ export const component = <
 >(
   component: ComponentAsTool<INPUT, OUTPUT>
 ): ComponentAsTool<INPUT, OUTPUT> => component;
+
+export type ComponentInputOf<T> =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  T extends ComponentAsTool<infer INPUT, any> ? INPUT : never;

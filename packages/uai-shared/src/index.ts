@@ -15,3 +15,5 @@ export type ComponentMapForServer = Record<
     outputSchema?: JSONSchema7;
   }
 >;
+
+export type UIMessageMetadata = { timestamp: string };

@@ -5,6 +5,6 @@ import { z } from 'zod';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ComponentMap = Record<string, ComponentAsTool<any, any>>;
 
-export const defineComponentMap = (
-  map: (component: typeof componentUtil, schema: typeof z) => ComponentMap
+export const defineComponentMap = <COMPONENT_MAP extends ComponentMap>(
+  map: (component: typeof componentUtil, schema: typeof z) => COMPONENT_MAP
 ) => map(componentUtil, z);

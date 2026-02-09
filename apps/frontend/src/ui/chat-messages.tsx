@@ -1,12 +1,13 @@
 import { cn } from '@/utils/cn';
+import { UAIMessage } from '@uai/client';
 import { Bot, User } from 'lucide-react';
-import { UIMessage } from './ui-message';
+import { componentMap } from '../components/component-map';
 
 export function ChatMessages({
   messages,
   agentAnswerInProgress,
 }: {
-  messages: UIMessage[];
+  messages: UAIMessage<typeof componentMap>[];
   agentAnswerInProgress: boolean;
 }) {
   return (
@@ -14,15 +15,20 @@ export function ChatMessages({
       <div className="mx-auto max-w-3xl space-y-6">
         {messages.map((message) => {
           if (message.parts.some((part) => part.type === 'text'))
+            // Text message
             return <MessageBubble key={message.id} message={message} />;
 
           if (message.parts.some((part) => part.type === 'render-component')) {
+            // Render component message
             const render = message.parts.find(
               (part) => part.type === 'render-component'
-            );
-            return render.state === 'input-available'
-              ? render.component(render.inputValues)
-              : null;
+            )!;
+
+            if (render.state === 'input-available') {
+              const Component = render.component;
+              return <Component key={message.id} {...render.inputValues} />;
+            }
+            return null;
           }
 
           // Still waiting for the text parts
@@ -35,7 +41,11 @@ export function ChatMessages({
   );
 }
 
-function MessageBubble({ message }: { message: UIMessage }) {
+function MessageBubble({
+  message,
+}: {
+  message: UAIMessage<typeof componentMap>;
+}) {
   const isAssistant = message.role === 'assistant';
 
   return (
@@ -70,7 +80,7 @@ function MessageBubble({ message }: { message: UIMessage }) {
             isAssistant ? 'text-muted-foreground' : 'text-primary-foreground/70'
           )}
         >
-          {formatTime(message.metadata?.timestamp)}
+          {formatTime(message.timestamp)}
         </p>
       </div>
 
