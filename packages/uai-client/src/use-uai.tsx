@@ -56,9 +56,10 @@ export const useUai = <UI_MESSAGE extends UIMessage = UIMessage>(
     transport: new DefaultChatTransport({
       api: options.uaiServerUrl,
       prepareSendMessagesRequest: async ({ messages, id }) => {
+        const componentMapForServer: ComponentMapForServer = {};
+
         // remove the only client-side objects (e.g. React components)
         // convert the tool definition to an interpretable format for the UAI server (e.g. JSON schemas)
-        const componentMapForServer: ComponentMapForServer = {};
         Object.entries(options.componentMap).forEach(
           async ([componentKey, component]) => {
             componentMapForServer[componentKey] = {
@@ -90,7 +91,36 @@ export const useUai = <UI_MESSAGE extends UIMessage = UIMessage>(
 
   return {
     id,
-    messages,
+    messages: messages.map((message) => ({
+      ...message,
+      parts: message.parts.map((part) => {
+        if ('toolCallId' in part) {
+          // some tool from the component map was called
+
+          // remove the "tool-" prefix from the tool call type (format: `tool-${toolId}`) to get the component key
+          const componentId = part.type.replace(/^tool-/, '');
+          // get the component from the component map
+          const component = options.componentMap[componentId];
+          if (!component) {
+            console.error(
+              `tool '${componentId}' not found in component map`,
+              `component map keys: ${Object.keys(options.componentMap).join(', ')}`
+            );
+            return part;
+          }
+
+          return {
+            type: 'render-component',
+            state: part.state,
+            ...component,
+            inputValues: part.input,
+          };
+        }
+
+        // no tool call, return the part as is
+        return part;
+      }),
+    })),
     error,
     sendMessage,
     status,

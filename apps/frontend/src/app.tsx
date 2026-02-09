@@ -29,7 +29,7 @@ export function App() {
     initialMessages,
   });
 
-  const isTyping = status === 'submitted'; // waiting for stream to start
+  const agentAnswerInProgress = status === 'submitted'; // waiting for stream to start
 
   const handleSendMessage = useCallback(
     async (text: string) => {
@@ -67,11 +67,17 @@ export function App() {
 
           {/* Chat Messages */}
           <div className="flex-1 overflow-hidden">
-            <ChatMessages messages={messages} isTyping={isTyping} />
+            <ChatMessages
+              messages={messages}
+              agentAnswerInProgress={agentAnswerInProgress}
+            />
           </div>
 
           {/* Chat Input */}
-          <ChatInput onSendMessage={handleSendMessage} isTyping={isTyping} />
+          <ChatInput
+            onSendMessage={handleSendMessage}
+            agentAnswerInProgress={agentAnswerInProgress}
+          />
         </div>
       </div>
     </main>

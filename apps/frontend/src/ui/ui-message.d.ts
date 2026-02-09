@@ -1,3 +1,3 @@
-import { UIMessage as UIMessageBase } from "@ai-sdk/react";
+import { UIMessage as UIMessageBase } from '@ai-sdk/react';
 
-export type UIMessage = UIMessageBase<{timestamp: string}>;
+export type UIMessage = UIMessageBase<{ timestamp: string }>;

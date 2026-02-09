@@ -1,33 +1,48 @@
-import { cn } from "@/utils/cn";
-import { Bot, User } from "lucide-react";
-import { UIMessage } from "./ui-message";
+import { cn } from '@/utils/cn';
+import { Bot, User } from 'lucide-react';
+import { UIMessage } from './ui-message';
 
-export function ChatMessages({ messages, isTyping }: {
+export function ChatMessages({
+  messages,
+  agentAnswerInProgress,
+}: {
   messages: UIMessage[];
-  isTyping: boolean;
+  agentAnswerInProgress: boolean;
 }) {
   return (
     <div className="h-full overflow-y-auto px-4 py-6">
       <div className="mx-auto max-w-3xl space-y-6">
-        {messages.map((message) => message.parts.some((part) => part.type === "text")
-        ? (<MessageBubble key={message.id} message={message} />)
-        // Still waiting for the text parts
-        : (<TypingIndicator key={message.id} />))}
+        {messages.map((message) => {
+          if (message.parts.some((part) => part.type === 'text'))
+            return <MessageBubble key={message.id} message={message} />;
 
-        {isTyping && <TypingIndicator />}
+          if (message.parts.some((part) => part.type === 'render-component')) {
+            const render = message.parts.find(
+              (part) => part.type === 'render-component'
+            );
+            return render.state === 'input-available'
+              ? render.component(render.inputValues)
+              : null;
+          }
+
+          // Still waiting for the text parts
+          return <TypingIndicator key={message.id} />;
+        })}
+
+        {agentAnswerInProgress && <TypingIndicator />}
       </div>
     </div>
   );
 }
 
 function MessageBubble({ message }: { message: UIMessage }) {
-  const isAssistant = message.role === "assistant";
+  const isAssistant = message.role === 'assistant';
 
   return (
     <div
       className={cn(
-        "flex gap-3",
-        isAssistant ? "justify-start" : "justify-end"
+        'flex gap-3',
+        isAssistant ? 'justify-start' : 'justify-end'
       )}
     >
       {isAssistant && (
@@ -38,19 +53,21 @@ function MessageBubble({ message }: { message: UIMessage }) {
 
       <div
         className={cn(
-          "max-w-[80%] rounded-2xl px-4 py-3",
+          'max-w-[80%] rounded-2xl px-4 py-3',
           isAssistant
-            ? "bg-card border border-border/50 rounded-tl-sm"
-            : "bg-primary text-primary-foreground rounded-tr-sm"
+            ? 'bg-card border border-border/50 rounded-tl-sm'
+            : 'bg-primary text-primary-foreground rounded-tr-sm'
         )}
       >
         <p className="whitespace-pre-wrap text-sm leading-relaxed">
-          {message.parts.map((part) => part.type === "text" ? part.text : null).join("")}
+          {message.parts
+            .map((part) => (part.type === 'text' ? part.text : null))
+            .join('')}
         </p>
         <p
           className={cn(
-            "mt-2 text-[10px] font-mono",
-            isAssistant ? "text-muted-foreground" : "text-primary-foreground/70"
+            'mt-2 text-[10px] font-mono',
+            isAssistant ? 'text-muted-foreground' : 'text-primary-foreground/70'
           )}
         >
           {formatTime(message.metadata?.timestamp)}
@@ -88,9 +105,11 @@ function TypingIndicator() {
 }
 
 function formatTime(date?: string) {
-  return date ? new Date(date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }) : null;
+  return date
+    ? new Date(date).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+    : null;
 }
