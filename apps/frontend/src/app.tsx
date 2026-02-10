@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { ChatMessages } from './ui/chat-messages';
+import { ChatMessages } from './ui/chat-message/chat-messages';
 import { ChatHeader } from './ui/header';
 import { ChatInput } from './ui/chat-input';
 import { useUai, defineInitialMessages } from '@uai/client';

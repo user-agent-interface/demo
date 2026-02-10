@@ -40,7 +40,11 @@ export function ChatInput({
     }
   };
 
-  const suggestions = ['show me the delayed shipments', 'What can you do?'];
+  const suggestions = [
+    'show me the delayed shipments',
+    'What can you do?',
+    'Sign out',
+  ];
 
   return (
     <div className="border-t border-border/50 bg-card/50 backdrop-blur-sm p-4 pb-2">
