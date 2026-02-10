@@ -27,7 +27,7 @@ export const convertAiSdkMessagesToUAIMessages = <
             part.type !== 'source-document' &&
             part.type !== 'dynamic-tool'
         )
-        .map((part) => {
+        .flatMap((part) => {
           if ('toolCallId' in part) {
             // some tool from the component map was called
 
@@ -40,13 +40,14 @@ export const convertAiSdkMessagesToUAIMessages = <
                 `tool '${componentId}' not found in component map`,
                 `component map keys: ${Object.keys(componentMap).join(', ')}`
               );
+              return [];
             }
 
             return {
               type: 'render-component',
               componentId,
               state: part.state,
-              inputValues: part.input as ComponentInputOf<typeof part>,
+              inputValues: part.input as ComponentInputOf<typeof component>,
               ...component,
               _toolCall: part,
             };

@@ -50,7 +50,7 @@ export type ComponentAsTool<
   /**
    * The React component to be used as the tool.
    */
-  component: React.ComponentType<INPUT>;
+  component: React.ComponentType<INPUT extends undefined ? object : INPUT>;
 };
 
 export const component = <
@@ -77,4 +77,8 @@ export const component = <
 
 export type ComponentInputOf<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends ComponentAsTool<infer INPUT, any> ? INPUT : never;
+  T extends ComponentAsTool<infer INPUT, any>
+    ? INPUT extends undefined
+      ? object // we default to empty object when INPUT is undefined (see above)
+      : INPUT
+    : never;
