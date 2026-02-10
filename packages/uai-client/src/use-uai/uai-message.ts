@@ -45,10 +45,25 @@ export type ComponentRenderUIPart<
   ? {
       type: 'render-component';
       componentId: K;
-      state: UIToolInvocation<COMPONENT_MAP[K]>['state'];
-      inputValues: ComponentInputOf<COMPONENT_MAP[K]>;
 
       // store the other parts of the toolCall to be able to replace
       _toolCall: Omit<UIToolInvocation<COMPONENT_MAP[K]>, 'input'>;
-    } & COMPONENT_MAP[K]
+    } & COMPONENT_MAP[K] &
+      (
+        | {
+            state: Extract<
+              UIToolInvocation<COMPONENT_MAP[K]>['state'],
+              'input-streaming'
+            >;
+            // inputValues are under streaming
+            inputValues: Partial<ComponentInputOf<COMPONENT_MAP[K]>>;
+          }
+        | {
+            state: Exclude<
+              UIToolInvocation<COMPONENT_MAP[K]>['state'],
+              'input-streaming'
+            >;
+            inputValues: ComponentInputOf<COMPONENT_MAP[K]>;
+          }
+      )
   : never;
