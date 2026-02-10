@@ -1,8 +1,36 @@
-import { UAIMessage } from './uai-message';
+import { ComponentRenderUIPart, UAIMessage } from './uai-message';
 import { ComponentMap } from '../component-map/component-map';
-import { ToolUIPart } from 'ai';
+import { ToolUIPart, UIToolInvocation } from 'ai';
 import { AiSdkMessage } from './ai-sdk-message.format';
 import { ComponentInputOf } from '../component-map/component.util';
+
+const isComponentId = <COMPONENT_MAP extends ComponentMap>(
+  componentMap: COMPONENT_MAP,
+  componentId: string
+): componentId is Extract<keyof COMPONENT_MAP, string> =>
+  componentId in componentMap;
+
+const toComponentRenderPart = <
+  COMPONENT_MAP extends ComponentMap,
+  K extends Extract<keyof COMPONENT_MAP, string>,
+>(
+  componentMap: COMPONENT_MAP,
+  componentId: K,
+  part: ToolUIPart
+): ComponentRenderUIPart<COMPONENT_MAP, K> => {
+  const component = componentMap[componentId];
+  const toolCall = part as UIToolInvocation<COMPONENT_MAP[K]>;
+  const { input: _input, ...toolCallWithoutInput } = toolCall;
+
+  return {
+    type: 'render-component',
+    componentId,
+    state: toolCall.state,
+    inputValues: toolCall.input as ComponentInputOf<COMPONENT_MAP[K]>,
+    ...component,
+    _toolCall: toolCallWithoutInput,
+  } as ComponentRenderUIPart<COMPONENT_MAP, K>;
+};
 
 export const convertAiSdkMessagesToUAIMessages = <
   COMPONENT_MAP extends ComponentMap,
@@ -33,9 +61,7 @@ export const convertAiSdkMessagesToUAIMessages = <
 
             // remove the "tool-" prefix from the tool call type (format: `tool-${toolId}`) to get the component key
             const componentId = part.type.replace(/^tool-/, '');
-            // get the component from the component map
-            const component = componentMap[componentId];
-            if (!component) {
+            if (!isComponentId(componentMap, componentId)) {
               console.error(
                 `tool '${componentId}' not found in component map`,
                 `component map keys: ${Object.keys(componentMap).join(', ')}`
@@ -43,14 +69,7 @@ export const convertAiSdkMessagesToUAIMessages = <
               return [];
             }
 
-            return {
-              type: 'render-component',
-              componentId,
-              state: part.state,
-              inputValues: part.input as ComponentInputOf<typeof component>,
-              ...component,
-              _toolCall: part,
-            };
+            return toComponentRenderPart(componentMap, componentId, part);
           }
 
           // no tool call, return the (not already filtered out) part as is
