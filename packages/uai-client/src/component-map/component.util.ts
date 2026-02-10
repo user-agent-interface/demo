@@ -1,5 +1,5 @@
 import type { JSONValue } from 'ai';
-import { ZodType } from 'zod';
+import { ZodType, z } from 'zod';
 
 type JSONObject = {
   [key: string]: JSONValue | undefined;
@@ -57,8 +57,23 @@ export const component = <
   INPUT extends JSONObject | undefined = undefined,
   OUTPUT extends JSONObject | undefined = undefined,
 >(
-  component: ComponentAsTool<INPUT, OUTPUT>
-): ComponentAsTool<INPUT, OUTPUT> => component;
+  component: INPUT extends undefined
+    ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
+        inputSchema?: ZodType<INPUT>;
+      }
+    : ComponentAsTool<INPUT, OUTPUT>
+): ComponentAsTool<INPUT, OUTPUT> => {
+  const inputSchema =
+    component.inputSchema ??
+    // when INPUT is undefined, we default to a matching empty-schema
+    // (keeping it compatible with JSON schema conversion)
+    z.object({} as INPUT);
+
+  return {
+    ...component,
+    inputSchema,
+  } as ComponentAsTool<INPUT, OUTPUT>;
+};
 
 export type ComponentInputOf<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,5 +1,5 @@
 import { useChat, UIMessage as UIMessageAiSdk } from '@ai-sdk/react';
-import type { UAIMessage } from '../ui-message';
+import type { UAIMessage } from './uai-message';
 import {
   ChatOnErrorCallback,
   ChatOnFinishCallback,
@@ -11,7 +11,7 @@ import { convertComponentMapForServer } from './component-map-for-server.convers
 import {
   convertAiSdkMessagesToUAIMessages,
   convertUAIMessagesToAiSdkMessages,
-} from './ui-message.conversion';
+} from './uai-message.conversion';
 import { AiSdkMessage } from './ai-sdk-message.format';
 import { useCallback } from 'react';
 

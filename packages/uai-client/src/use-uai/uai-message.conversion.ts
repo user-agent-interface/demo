@@ -1,4 +1,4 @@
-import { UAIMessage } from '../ui-message';
+import { UAIMessage } from './uai-message';
 import { ComponentMap } from '../component-map/component-map';
 import { ToolUIPart } from 'ai';
 import { AiSdkMessage } from './ai-sdk-message.format';
@@ -71,7 +71,7 @@ export const convertUAIMessagesToAiSdkMessages = <
       parts: message.parts.map((part) => {
         if (part.type === 'render-component') {
           return {
-            type: `tool-${part.componentId}`,
+            type: `tool-${String(part.componentId)}`,
             input: part.inputValues,
             ...part._toolCall,
           } as ToolUIPart;

@@ -1,18 +1,18 @@
-import { ComponentMap } from './component-map/component-map';
+import { ComponentMap } from '../component-map/component-map';
 import {
   ReasoningUIPart,
   StepStartUIPart,
   TextUIPart,
   UIToolInvocation,
 } from 'ai';
-import { ComponentInputOf } from './component-map/component.util';
+import { ComponentInputOf } from '../component-map/component.util';
 
 /**
  * UI Messages. They are used in the client and to communicate between the UAI client and the UAI server.
  */
 export interface UAIMessage<COMPONENT_MAP extends ComponentMap> {
   /**
-   *A unique identifier for the message.
+   * A unique identifier for the message.
    */
   id: string;
   /**
@@ -34,19 +34,19 @@ export interface UAIMessage<COMPONENT_MAP extends ComponentMap> {
     | StepStartUIPart
     | TextUIPart
     | ReasoningUIPart
-    | ComponentRenderUIPart<COMPONENT_MAP[keyof COMPONENT_MAP]>
+    | ComponentRenderUIPart<COMPONENT_MAP>
   >;
 }
 
-type ComponentRenderUIPart<COMPONENT extends ComponentMap[keyof ComponentMap]> =
-  {
-    type: 'render-component';
-    componentId: string;
-    state: UIToolInvocation<COMPONENT>['state'];
-    inputValues: ComponentInputOf<COMPONENT>;
-    _toolCall: Omit<
-      UIToolInvocation<COMPONENT>,
-      // store the other parts of the toolCall to be able to replace
-      'input'
-    >;
-  } & COMPONENT;
+type ComponentRenderUIPart<
+  COMPONENT_MAP extends ComponentMap,
+  K extends keyof COMPONENT_MAP = keyof COMPONENT_MAP,
+> = {
+  type: 'render-component';
+  componentId: K;
+  state: UIToolInvocation<COMPONENT_MAP[K]>['state'];
+  inputValues: ComponentInputOf<COMPONENT_MAP[K]>;
+
+  // store the other parts of the toolCall to be able to replace
+  _toolCall: Omit<UIToolInvocation<COMPONENT_MAP[K]>, 'input'>;
+} & COMPONENT_MAP[K];

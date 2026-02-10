@@ -1,4 +1,4 @@
-import { UAIMessage } from '../ui-message';
+import { UAIMessage } from './uai-message';
 
 export const defineInitialMessages = (
   messages: Array<{
