@@ -1,5 +1,6 @@
 import { defineComponentMap } from '@uai/client';
 import { Shipments } from './shipments';
+import { SignOut } from './sign-out';
 
 export const componentMap = defineComponentMap((component, schema) => ({
   shipments: component({
@@ -11,5 +12,9 @@ export const componentMap = defineComponentMap((component, schema) => ({
         .default('inTransit'),
     }),
     component: Shipments,
+  }),
+  signOut: component({
+    description: 'Sign out',
+    component: SignOut,
   }),
 }));

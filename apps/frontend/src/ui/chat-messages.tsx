@@ -2,6 +2,7 @@ import { cn } from '@/utils/cn';
 import { UAIMessage } from '@uai/client';
 import { Bot, User } from 'lucide-react';
 import { componentMap } from '../components/component-map';
+import { ComponentType } from 'react';
 
 export function ChatMessages({
   messages,
@@ -25,8 +26,16 @@ export function ChatMessages({
             )!;
 
             if (render.state === 'input-available') {
-              const Component = render.component;
-              return <Component key={message.id} {...render.inputValues} />;
+              const inputValues = render.inputValues;
+              const Component = render.component as ComponentType<
+                typeof inputValues
+              >;
+
+              return (
+                <div key={message.id}>
+                  <Component {...inputValues} />
+                </div>
+              );
             }
             return null;
           }
