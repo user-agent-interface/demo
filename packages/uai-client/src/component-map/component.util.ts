@@ -1,13 +1,10 @@
-import type { JSONValue } from 'ai';
 import { ZodType, z } from 'zod';
 
-type JSONObject = {
-  [key: string]: JSONValue | undefined;
-};
+type IsEmptyObject<T extends object> = keyof T extends never ? true : false;
 
 export type ComponentAsTool<
-  INPUT extends JSONObject | undefined = undefined,
-  OUTPUT extends JSONObject | undefined = undefined,
+  INPUT extends object,
+  OUTPUT extends object | undefined = undefined,
 > = {
   // USED BY UAI-SERVER
 
@@ -50,35 +47,33 @@ export type ComponentAsTool<
   /**
    * The React component to be used as the tool.
    */
-  component: React.ComponentType<INPUT extends undefined ? object : INPUT>;
+  component: React.ComponentType<INPUT>;
 };
 
-export const component = <
-  INPUT extends JSONObject | undefined = undefined,
-  OUTPUT extends JSONObject | undefined = undefined,
->(
-  component: INPUT extends undefined
+type ComponentDefinition<
+  INPUT extends object,
+  OUTPUT extends object | undefined = undefined,
+> =
+  IsEmptyObject<INPUT> extends true
     ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
         inputSchema?: ZodType<INPUT>;
       }
-    : ComponentAsTool<INPUT, OUTPUT>
-): ComponentAsTool<INPUT, OUTPUT> => {
-  const inputSchema =
-    component.inputSchema ??
-    // when INPUT is undefined, we default to a matching empty-schema
-    // (keeping it compatible with JSON schema conversion)
-    z.object({} as INPUT);
+    : ComponentAsTool<INPUT, OUTPUT>;
 
-  return {
+export const component = <
+  INPUT extends object,
+  OUTPUT extends object | undefined = undefined,
+>(
+  component: ComponentDefinition<INPUT, OUTPUT>
+): ComponentAsTool<INPUT, OUTPUT> =>
+  ({
     ...component,
-    inputSchema,
-  } as ComponentAsTool<INPUT, OUTPUT>;
-};
+    inputSchema:
+      component.inputSchema ??
+      // when INPUT is an empty object, we default to a matching empty-schema
+      z.object({} as INPUT),
+  }) as ComponentAsTool<INPUT, OUTPUT>;
 
 export type ComponentInputOf<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends ComponentAsTool<infer INPUT, any>
-    ? INPUT extends undefined
-      ? object // we default to empty object when INPUT is undefined (see above)
-      : INPUT
-    : never;
+  T extends ComponentAsTool<infer INPUT, any> ? INPUT : never;
