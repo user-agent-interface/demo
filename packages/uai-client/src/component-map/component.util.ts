@@ -6,8 +6,6 @@ export type ComponentAsTool<
   INPUT extends object,
   OUTPUT extends object | undefined = undefined,
 > = {
-  // USED BY UAI-SERVER
-
   /**
    * An optional title of the tool.
    */
@@ -41,24 +39,24 @@ export type ComponentAsTool<
    * You can use descriptions on the schema properties to make the output understandable for the language model.
    */
   outputSchema?: ZodType<OUTPUT>;
+};
 
-  // USED BY UAI-CLIENT
+export type ComponentDefinition<
+  INPUT extends object,
+  OUTPUT extends object | undefined = undefined,
+> = (IsEmptyObject<INPUT> extends true
+  ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
+      // allow undefined INPUT, we default to a matching empty-schema
+      inputSchema?: ZodType<INPUT>;
+    }
+  : ComponentAsTool<INPUT, OUTPUT>) & {
+  // FOR TYPE CHECKING ONLY
 
   /**
    * The React component to be used as the tool.
    */
   component: React.ComponentType<INPUT>;
 };
-
-type ComponentDefinition<
-  INPUT extends object,
-  OUTPUT extends object | undefined = undefined,
-> =
-  IsEmptyObject<INPUT> extends true
-    ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
-        inputSchema?: ZodType<INPUT>;
-      }
-    : ComponentAsTool<INPUT, OUTPUT>;
 
 export const component = <
   INPUT extends object,
