@@ -1,8 +1,8 @@
-import { ComponentRenderUIPart, UAIMessage } from './uai-message';
-import { ComponentMap } from '../component-map/component-map';
-import { ToolUIPart, UIToolInvocation } from 'ai';
-import { AiSdkMessage } from './ai-sdk-message.format';
-import { ComponentInputOf } from '../component-map/component.util';
+import type { ComponentRenderUIPart, UAIMessage } from './uai-message';
+import type { ComponentMap } from '../component-map/component-map';
+import type { ToolUIPart, UIToolInvocation } from 'ai';
+import type { AiSdkMessage } from './ai-sdk-message.format';
+import type { ComponentInputOf } from '../component-map/component.util';
 
 const isComponentId = <COMPONENT_MAP extends ComponentMap>(
   componentMap: COMPONENT_MAP,

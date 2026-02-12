@@ -11,7 +11,10 @@ export function RenderComponent({
   const render = message.parts.find((part) => part.type === 'render-component');
   if (!render) return null;
 
-  if (render.state === 'input-available') {
+  if (
+    render.state === 'input-available' ||
+    render.state === 'output-available'
+  ) {
     return (
       <>
         {render.componentId === 'shipments' && (

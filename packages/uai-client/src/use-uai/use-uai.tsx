@@ -61,6 +61,7 @@ export const useUai = <COMPONENT_MAP extends ComponentMap>(
   const {
     id,
     messages,
+    addToolOutput,
     error,
     sendMessage: sendAiSdkMessage,
     status,
@@ -82,6 +83,21 @@ export const useUai = <COMPONENT_MAP extends ComponentMap>(
     messages: convertUAIMessagesToAiSdkMessages(options.initialMessages),
     onError: options.onError,
     onFinish: options.onFinish,
+    onToolCall: ({ toolCall: { providerExecuted, toolName, toolCallId } }) => {
+      if (
+        providerExecuted === undefined && // tool call need to be executed by the client
+        options.componentMap[toolName].outputSchema === undefined // component has no output schema (no output expected)
+      ) {
+        // mark the tool call as output-available (so the chat can be continued)
+        // (otherwise UAI server would crash on any further message as it would wait for the deferred output of the tool call)
+        addToolOutput({
+          tool: toolName,
+          toolCallId: toolCallId,
+          state: 'output-available',
+          output: undefined,
+        });
+      }
+    },
   });
 
   const sendMessage = useCallback(
