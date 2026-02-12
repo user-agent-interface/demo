@@ -5,7 +5,7 @@ import { SignOut } from '../../components/sign-out';
 
 export function RenderComponent({
   message: {
-    renderComponent: { componentId, inputValues, state },
+    renderComponent: { componentId, componentInput, state },
   },
 }: {
   message: UAIRenderComponentMessage<typeof componentMap>;
@@ -13,8 +13,8 @@ export function RenderComponent({
   if (state === 'input-available' || state === 'output-available') {
     return (
       <>
-        {componentId === 'shipments' && <Shipments {...inputValues} />}
-        {componentId === 'signOut' && <SignOut {...inputValues} />}
+        {componentId === 'shipments' && <Shipments {...componentInput} />}
+        {componentId === 'signOut' && <SignOut {...componentInput} />}
       </>
     );
   }

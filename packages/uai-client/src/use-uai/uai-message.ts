@@ -79,15 +79,15 @@ export type ComponentRenderUIPart<
               UIToolInvocation<COMPONENT_MAP[K]>['state'],
               'input-streaming'
             >;
-            // inputValues are under streaming
-            inputValues: Partial<ComponentInputOf<COMPONENT_MAP[K]>>;
+            // input values are under streaming
+            componentInput: Partial<ComponentInputOf<COMPONENT_MAP[K]>>;
           }
         | {
             state: Exclude<
               UIToolInvocation<COMPONENT_MAP[K]>['state'],
               'input-streaming'
             >;
-            inputValues: ComponentInputOf<COMPONENT_MAP[K]>;
+            componentInput: ComponentInputOf<COMPONENT_MAP[K]>;
           }
       )
   : never;
