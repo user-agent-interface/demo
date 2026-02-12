@@ -15,17 +15,16 @@ export function ChatMessages({
     <div className="h-full overflow-y-auto px-4 py-6">
       <div className="mx-auto max-w-3xl space-y-6">
         {messages.map((message) => {
-          if (message.parts.some((part) => part.type === 'text'))
+          if (message.type === 'text')
             // Text message
             return <TextMessageBubble key={message.id} message={message} />;
 
-          if (message.parts.some((part) => part.type === 'render-component')) {
+          if (message.type === 'render-component') {
             // Render component message
             return <RenderComponent key={message.id} message={message} />;
           }
 
-          // Still waiting for the parts
-          return <TypingIndicator key={message.id} />;
+          return null;
         })}
 
         {agentAnswerInProgress && <TypingIndicator />}

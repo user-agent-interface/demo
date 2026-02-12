@@ -1,28 +1,20 @@
-import { UAIMessage } from '@uai/client';
+import { UAIRenderComponentMessage } from '@uai/client';
 import { componentMap } from '../../components/component-map';
 import { Shipments } from '../../components/shipments';
 import { SignOut } from '../../components/sign-out';
 
 export function RenderComponent({
-  message,
+  message: {
+    renderComponent: { componentId, inputValues, state },
+  },
 }: {
-  message: UAIMessage<typeof componentMap>;
+  message: UAIRenderComponentMessage<typeof componentMap>;
 }) {
-  const render = message.parts.find((part) => part.type === 'render-component');
-  if (!render) return null;
-
-  if (
-    render.state === 'input-available' ||
-    render.state === 'output-available'
-  ) {
+  if (state === 'input-available' || state === 'output-available') {
     return (
       <>
-        {render.componentId === 'shipments' && (
-          <Shipments {...render.inputValues} />
-        )}
-        {render.componentId === 'signOut' && (
-          <SignOut {...render.inputValues} />
-        )}
+        {componentId === 'shipments' && <Shipments {...inputValues} />}
+        {componentId === 'signOut' && <SignOut {...inputValues} />}
       </>
     );
   }

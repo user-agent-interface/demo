@@ -1,4 +1,4 @@
-import { UAIMessage } from '@uai/client';
+import { UAITextMessage } from '@uai/client';
 import { componentMap } from '../../components/component-map';
 import { cn } from '../../utils/cn';
 import { Bot, User } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Bot, User } from 'lucide-react';
 export function TextMessageBubble({
   message,
 }: {
-  message: UAIMessage<typeof componentMap>;
+  message: UAITextMessage<typeof componentMap>;
 }) {
   const isAssistant = message.role === 'assistant';
 
@@ -32,9 +32,7 @@ export function TextMessageBubble({
         )}
       >
         <p className="whitespace-pre-wrap text-sm leading-relaxed">
-          {message.parts
-            .map((part) => (part.type === 'text' ? part.text : null))
-            .join('')}
+          {message.text.text}
         </p>
         <p
           className={cn(

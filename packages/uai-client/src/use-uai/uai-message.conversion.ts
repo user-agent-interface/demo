@@ -38,44 +38,76 @@ export const convertAiSdkMessagesToUAIMessages = <
   aiSdkMessages: Array<AiSdkMessage>,
   componentMap: COMPONENT_MAP
 ): Array<UAIMessage<COMPONENT_MAP>> =>
-  aiSdkMessages.map((message) => {
-    const timestamp = message.metadata?.timestamp;
+  aiSdkMessages.flatMap((message) => {
+    const { id, role, metadata, parts: originalParts } = message;
+    // Timestamp
+    const timestamp = metadata?.timestamp ?? '';
     if (!timestamp) console.error('timestamp is missing in message.', message);
 
-    return {
-      id: message.id,
-      role: message.role,
-      timestamp: message.metadata?.timestamp ?? '',
-      parts: message.parts
-        .filter(
-          (part) =>
-            // filter out parts that are not relevant to the UAI client
-            part.type !== 'file' &&
-            part.type !== 'source-url' &&
-            part.type !== 'source-document' &&
-            part.type !== 'dynamic-tool'
-        )
-        .flatMap((part) => {
-          if ('toolCallId' in part) {
-            // some tool from the component map was called
+    const parts = originalParts
+      .filter(
+        (part) =>
+          // filter out parts that are not relevant to the UAI client
+          part.type !== 'file' &&
+          part.type !== 'source-url' &&
+          part.type !== 'source-document' &&
+          part.type !== 'dynamic-tool'
+      )
+      .flatMap((part) => {
+        if ('toolCallId' in part) {
+          // Convert tool call to component render part
 
-            // remove the "tool-" prefix from the tool call type (format: `tool-${toolId}`) to get the component key
-            const componentId = part.type.replace(/^tool-/, '');
-            if (!isComponentId(componentMap, componentId)) {
-              console.error(
-                `tool '${componentId}' not found in component map`,
-                `component map keys: ${Object.keys(componentMap).join(', ')}`
-              );
-              return [];
-            }
-
-            return toComponentRenderPart(componentMap, componentId, part);
+          // remove the "tool-" prefix from the tool call type (format: `tool-${toolId}`) to get the component key
+          const componentId = part.type.replace(/^tool-/, '');
+          if (!isComponentId(componentMap, componentId)) {
+            console.error(
+              `tool '${componentId}' not found in component map`,
+              `component map keys: ${Object.keys(componentMap).join(', ')}`
+            );
+            return [];
           }
 
-          // no tool call, return the (not already filtered out) part as is
-          return part as Exclude<typeof part, { type: `data-${string}` }>;
-        }),
-    };
+          return toComponentRenderPart(componentMap, componentId, part);
+        }
+
+        // no tool call, return the (not already filtered out) part as is
+        return part as Exclude<typeof part, { type: `data-${string}` }>;
+      });
+
+    const baseProps = { id, role, timestamp, parts };
+
+    if (originalParts.length === 0) {
+      // Empty message
+      return {
+        ...baseProps,
+        type: 'empty',
+      };
+    }
+
+    const textPart = parts.find((part) => part.type === 'text');
+    if (textPart) {
+      // Text message
+      return {
+        ...baseProps,
+        type: 'text',
+        text: textPart,
+      };
+    }
+
+    const componentRenderPart = parts.find(
+      (part) => part.type === 'render-component'
+    );
+    if (componentRenderPart) {
+      // Component render message
+      return {
+        ...baseProps,
+        type: 'render-component',
+        renderComponent: componentRenderPart,
+      };
+    }
+
+    // Filter out messages (by flatMap) that does not contain text or component render part (and is not empty)
+    return [];
   });
 
 export const convertUAIMessagesToAiSdkMessages = <

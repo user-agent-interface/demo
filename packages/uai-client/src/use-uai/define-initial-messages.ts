@@ -1,3 +1,4 @@
+import { TextUIPart } from 'ai';
 import { UAIMessage } from './uai-message';
 
 export const defineInitialMessages = (
@@ -17,9 +18,15 @@ export const defineInitialMessages = (
   }>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Array<UAIMessage<any>> =>
-  messages.map((message) => ({
-    id: message.id,
-    role: message.role,
-    timestamp: new Date().toISOString(),
-    parts: [{ type: 'text', text: message.text }],
-  }));
+  messages.map((message) => {
+    const textPart: TextUIPart = { type: 'text', text: message.text };
+
+    return {
+      id: message.id,
+      role: message.role,
+      timestamp: new Date().toISOString(),
+      type: 'text',
+      text: textPart,
+      parts: [textPart],
+    };
+  });

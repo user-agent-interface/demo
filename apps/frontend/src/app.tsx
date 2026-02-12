@@ -22,7 +22,11 @@ export function App() {
     initialMessages,
   });
 
-  const agentAnswerInProgress = status === 'submitted'; // waiting for stream to start
+  const agentAnswerInProgress =
+    // either if we just submitted the message
+    status === 'submitted' ||
+    // or if we are streaming and the last message is still empty (waiting for streamed parts to be ready)
+    (status === 'streaming' && messages[messages.length - 1].type === 'empty');
 
   const handleSendMessage = useCallback(
     async (text: string) => await sendMessage(text),
