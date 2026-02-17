@@ -120,7 +120,7 @@ export function ChatInput({
 
         {/* Footer Info */}
         <p className="mt-2 text-center font-mono text-[10px] text-muted-foreground">
-          <span className="tracking-wider">uai demo by</span>{' '}
+          <span className="tracking-wider">user-agent-interface demo by</span>{' '}
           <a
             href="https://futuristic.digital"
             target="_blank"

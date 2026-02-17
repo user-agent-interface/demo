@@ -26,7 +26,7 @@ const toComponentRenderPart = <
     type: 'render-component',
     componentId,
     state: toolCall.state,
-    componentInput: toolCall.input as ComponentInputOf<COMPONENT_MAP[K]>,
+    componentProps: toolCall.input as ComponentInputOf<COMPONENT_MAP[K]>,
     ...component,
     _toolCall: toolCallWithoutInput,
   } as ComponentRenderUIPart<COMPONENT_MAP, K>;
@@ -124,7 +124,7 @@ export const convertUAIMessagesToAiSdkMessages = <
         if (part.type === 'render-component') {
           return {
             type: `tool-${String(part.componentId)}`,
-            input: part.componentInput,
+            input: part.componentProps,
             ...part._toolCall,
           } as ToolUIPart;
         }

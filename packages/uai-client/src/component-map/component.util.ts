@@ -39,18 +39,6 @@ export type ComponentAsTool<
    * You can use descriptions on the schema properties to make the output understandable for the language model.
    */
   outputSchema?: ZodType<OUTPUT>;
-};
-
-export type ComponentDefinition<
-  INPUT extends object,
-  OUTPUT extends object | undefined = undefined,
-> = (IsEmptyObject<INPUT> extends true
-  ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
-      // allow undefined INPUT, we default to a matching empty-schema
-      inputSchema?: ZodType<INPUT>;
-    }
-  : ComponentAsTool<INPUT, OUTPUT>) & {
-  // FOR TYPE CHECKING ONLY
 
   /**
    * The React component to be used as the tool.
@@ -60,6 +48,18 @@ export type ComponentDefinition<
       ? INPUT
       : INPUT & { sendComponentOutput: (output: OUTPUT) => Promise<void> }
   >;
+};
+
+export type ComponentDefinition<
+  INPUT extends object,
+  OUTPUT extends object | undefined = undefined,
+> = (IsEmptyObject<Omit<INPUT, 'sendComponentOutput'>> extends true
+  ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
+      // allow undefined INPUT, we default to a matching empty-schema
+      inputSchema?: ZodType<INPUT>;
+    }
+  : ComponentAsTool<INPUT, OUTPUT>) & {
+  // FOR TYPE CHECKING ONLY
 };
 
 export const component = <

@@ -1,20 +1,21 @@
 import { UAIRenderComponentMessage } from '@uai/client';
 import { componentMap } from '../../components/component-map';
-import { Shipments } from '../../components/shipments';
-import { SignOut } from '../../components/sign-out';
 
 export function RenderComponent({
   message: {
-    renderComponent: { componentId, componentInput, state },
+    renderComponent: { componentId, componentProps, state },
   },
 }: {
   message: UAIRenderComponentMessage<typeof componentMap>;
 }) {
   if (state === 'input-available' || state === 'output-available') {
+    const Component = componentMap[componentId].component;
     return (
       <>
-        {componentId === 'shipments' && <Shipments {...componentInput} />}
-        {componentId === 'signOut' && <SignOut {...componentInput} />}
+        {/* Component's Type is the Union of all possible components from componentMap,
+        while componentProps Type is the Union of all possible componentProps from componentMap.
+        @ts-expect-error - TypeScript cannot infer the match between the two types */}
+        <Component {...componentProps} />
       </>
     );
   }
