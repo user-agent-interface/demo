@@ -55,7 +55,11 @@ export type ComponentDefinition<
   /**
    * The React component to be used as the tool.
    */
-  component: React.ComponentType<INPUT>;
+  component: React.ComponentType<
+    OUTPUT extends undefined
+      ? INPUT
+      : INPUT & { sendComponentOutput: (output: OUTPUT) => Promise<void> }
+  >;
 };
 
 export const component = <
