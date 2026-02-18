@@ -111,7 +111,11 @@ export const useUai = <COMPONENT_MAP extends ComponentMap>(
 
   return {
     id,
-    messages: convertAiSdkMessagesToUAIMessages(messages, options.componentMap),
+    messages: convertAiSdkMessagesToUAIMessages(
+      messages,
+      options.componentMap,
+      addToolOutput
+    ),
     error,
     sendMessage,
     status,

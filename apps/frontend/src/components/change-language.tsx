@@ -10,17 +10,17 @@ const languages: Record<
   en: {
     name: 'English',
     flag: '🇺🇸',
-    changeText: 'Change the language to English',
+    changeText: 'Set language to English',
   },
   de: {
     name: 'Deutsch',
     flag: '🇩🇪',
-    changeText: 'Sprache auf Deutsch ändern',
+    changeText: 'Setze die Sprache auf Deutsch', // in german: Set language to English
   },
   es: {
     name: 'Español',
     flag: '🇪🇸',
-    changeText: 'Cambiar el idioma a Español',
+    changeText: 'Establecer el idioma a Español', // in spanish: Set language to English
   },
 };
 const languagesArray = Object.keys(languages) as Language[];
@@ -35,7 +35,7 @@ export const changeLanguage = component({
   }),
   component: function ChangeLanguage({
     preferredLanguage,
-    sendComponentOutput,
+    setComponentOutput,
   }) {
     const [selected, setSelected] = useState<Language>(
       preferredLanguage || 'en'
@@ -43,11 +43,11 @@ export const changeLanguage = component({
     const [isOpen, setIsOpen] = useState(false);
 
     const handleConfirm = () => {
-      sendComponentOutput({ selectedLanguage: selected });
+      setComponentOutput({ selectedLanguage: selected });
     };
 
     const handleCancel = () => {
-      console.log('canceled');
+      setComponentOutput('cancelled');
     };
 
     return (

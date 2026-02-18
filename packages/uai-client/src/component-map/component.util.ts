@@ -46,14 +46,16 @@ export type ComponentAsTool<
   component: React.ComponentType<
     OUTPUT extends undefined
       ? INPUT
-      : INPUT & { sendComponentOutput: (output: OUTPUT) => Promise<void> }
+      : INPUT & {
+          setComponentOutput: (output: OUTPUT | 'cancelled') => Promise<void>;
+        }
   >;
 };
 
 export type ComponentDefinition<
   INPUT extends object,
   OUTPUT extends object | undefined = undefined,
-> = (IsEmptyObject<Omit<INPUT, 'sendComponentOutput'>> extends true
+> = (IsEmptyObject<Omit<INPUT, 'setComponentOutput'>> extends true
   ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
       // allow undefined INPUT, we default to a matching empty-schema
       inputSchema?: ZodType<INPUT>;

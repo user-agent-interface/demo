@@ -3,6 +3,8 @@ import type { ComponentMap } from '../component-map/component-map';
 import type { ToolUIPart, UIToolInvocation } from 'ai';
 import type { AiSdkMessage } from './ai-sdk-message.format';
 import type { ComponentInputOf } from '../component-map/component.util';
+import { UseChatHelpers } from '@ai-sdk/react';
+import { z } from 'zod';
 
 const isComponentId = <COMPONENT_MAP extends ComponentMap>(
   componentMap: COMPONENT_MAP,
@@ -16,7 +18,8 @@ const toComponentRenderPart = <
 >(
   componentMap: COMPONENT_MAP,
   componentId: K,
-  part: ToolUIPart
+  part: ToolUIPart,
+  addToolOutput: UseChatHelpers<AiSdkMessage>['addToolOutput']
 ): ComponentRenderUIPart<COMPONENT_MAP, K> => {
   const component = componentMap[componentId];
   const toolCall = part as UIToolInvocation<COMPONENT_MAP[K]>;
@@ -26,7 +29,18 @@ const toComponentRenderPart = <
     type: 'render-component',
     componentId,
     state: toolCall.state,
-    componentProps: toolCall.input as ComponentInputOf<COMPONENT_MAP[K]>,
+    componentProps: {
+      ...(toolCall.input as ComponentInputOf<COMPONENT_MAP[K]>),
+      setComponentOutput: component.outputSchema
+        ? (output: z.infer<typeof component.outputSchema> | 'cancelled') =>
+            addToolOutput({
+              tool: componentId,
+              toolCallId: toolCall.toolCallId,
+              state: 'output-available',
+              output,
+            })
+        : undefined,
+    },
     ...component,
     _toolCall: toolCallWithoutInput,
   } as ComponentRenderUIPart<COMPONENT_MAP, K>;
@@ -36,7 +50,8 @@ export const convertAiSdkMessagesToUAIMessages = <
   COMPONENT_MAP extends ComponentMap,
 >(
   aiSdkMessages: Array<AiSdkMessage>,
-  componentMap: COMPONENT_MAP
+  componentMap: COMPONENT_MAP,
+  addToolOutput: UseChatHelpers<AiSdkMessage>['addToolOutput']
 ): Array<UAIMessage<COMPONENT_MAP>> =>
   aiSdkMessages.flatMap((message) => {
     const { id, role, metadata, parts: originalParts } = message;
@@ -67,7 +82,12 @@ export const convertAiSdkMessagesToUAIMessages = <
             return [];
           }
 
-          return toComponentRenderPart(componentMap, componentId, part);
+          return toComponentRenderPart(
+            componentMap,
+            componentId,
+            part,
+            addToolOutput
+          );
         }
 
         // no tool call, return the (not already filtered out) part as is
