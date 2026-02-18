@@ -41,8 +41,9 @@ export function ChatInput({
   };
 
   const suggestions = [
-    'show me the delayed shipments',
     'What can you do?',
+    'Show me the delayed shipments',
+    'Change the language to german',
     'Sign out',
   ];
 
