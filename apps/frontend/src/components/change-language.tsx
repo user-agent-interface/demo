@@ -52,14 +52,14 @@ export const changeLanguage = component({
     };
 
     return (
-      <div className="mt-3 rounded-xl border border-border/50 bg-card/50 p-4">
+      <div className="flex flex-col">
         {/* Custom select dropdown */}
-        <div className="relative mb-4">
+        <div className="relative mb-4 flex justify-end">
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             disabled={!!componentOutput}
-            className={`flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+            className={`flex items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 ${
               componentOutput
                 ? 'cursor-default opacity-60 text-muted-foreground'
                 : 'text-foreground hover:border-primary/50'
@@ -118,13 +118,13 @@ export const changeLanguage = component({
         </div>
 
         {/* Buttons */}
-        <div className="flex items-center gap-2">
-          {!componentOutput || componentOutput === 'cancelled' ? (
+        <div className="flex items-center justify-end gap-2">
+          {(!componentOutput || componentOutput === 'cancelled') && (
             <button
               type="button"
               disabled={!!componentOutput}
               onClick={handleCancel}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-4 py-2 text-sm transition-colors ${
+              className={`flex items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-4 py-2 text-sm transition-colors ${
                 componentOutput === 'cancelled'
                   ? 'cursor-default opacity-50 text-muted-foreground'
                   : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
@@ -133,15 +133,13 @@ export const changeLanguage = component({
               <X className="h-3.5 w-3.5" />
               Cancel
             </button>
-          ) : (
-            <div className="flex-1"></div>
           )}
-          {componentOutput !== 'cancelled' ? (
+          {componentOutput !== 'cancelled' && (
             <button
               type="button"
               disabled={!!componentOutput}
               onClick={handleConfirm}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 componentOutput
                   ? 'bg-primary/20 text-primary cursor-default'
                   : 'bg-primary text-primary-foreground hover:bg-primary/90'
@@ -150,8 +148,6 @@ export const changeLanguage = component({
               <Check className="h-3.5 w-3.5" />
               {languages[selected].changeText}
             </button>
-          ) : (
-            <div className="flex-1"></div>
           )}
         </div>
       </div>
