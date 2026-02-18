@@ -1,6 +1,8 @@
 import { ZodType, z } from 'zod';
 
-type IsEmptyObject<T extends object> = keyof T extends never ? true : false;
+type BaseReactComponentProps = {
+  componentState: 'input-available' | 'input-streaming' | 'output-available';
+};
 
 export type ComponentAsTool<
   INPUT extends object,
@@ -45,17 +47,20 @@ export type ComponentAsTool<
    */
   component: React.ComponentType<
     OUTPUT extends undefined
-      ? INPUT
-      : INPUT & {
-          setComponentOutput: (output: OUTPUT | 'cancelled') => Promise<void>;
-        }
+      ? INPUT & BaseReactComponentProps
+      : INPUT &
+          BaseReactComponentProps & {
+            // WATCH OUT: omit below params from IsEmptyObject check in ComponentDefinition
+            setComponentOutput: (output: OUTPUT | 'cancelled') => Promise<void>;
+            componentOutput?: OUTPUT | 'cancelled';
+          }
   >;
 };
 
 export type ComponentDefinition<
   INPUT extends object,
   OUTPUT extends object | undefined = undefined,
-> = (IsEmptyObject<Omit<INPUT, 'setComponentOutput'>> extends true
+> = (IsEmptyObject<Omit<INPUT, 'setComponentOutput' | 'output'>> extends true
   ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
       // allow undefined INPUT, we default to a matching empty-schema
       inputSchema?: ZodType<INPUT>;
@@ -78,6 +83,9 @@ export const component = <
       z.object({} as INPUT),
   }) as ComponentAsTool<INPUT, OUTPUT>;
 
+// Type Utilities
 export type ComponentInputOf<T> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends ComponentAsTool<infer INPUT, any> ? INPUT : never;
+
+type IsEmptyObject<T extends object> = keyof T extends never ? true : false;

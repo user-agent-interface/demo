@@ -35,6 +35,7 @@ export const changeLanguage = component({
   }),
   component: function ChangeLanguage({
     preferredLanguage,
+    componentOutput,
     setComponentOutput,
   }) {
     const [selected, setSelected] = useState<Language>(
@@ -57,7 +58,12 @@ export const changeLanguage = component({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground transition-colors hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            disabled={!!componentOutput}
+            className={`flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/30 ${
+              componentOutput
+                ? 'cursor-default opacity-60 text-muted-foreground'
+                : 'text-foreground hover:border-primary/50'
+            }`}
           >
             <span className="flex items-center gap-2.5">
               <span className="text-lg leading-none">
@@ -80,7 +86,7 @@ export const changeLanguage = component({
             </svg>
           </button>
 
-          {isOpen && (
+          {isOpen && !componentOutput && (
             <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg">
               <div className="max-h-48 overflow-y-auto">
                 {languagesArray.map((language) => (
@@ -113,22 +119,40 @@ export const changeLanguage = component({
 
         {/* Buttons */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            <X className="h-3.5 w-3.5" />
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={handleConfirm}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            <Check className="h-3.5 w-3.5" />
-            {languages[selected].changeText}
-          </button>
+          {!componentOutput || componentOutput === 'cancelled' ? (
+            <button
+              type="button"
+              disabled={!!componentOutput}
+              onClick={handleCancel}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-4 py-2 text-sm transition-colors ${
+                componentOutput === 'cancelled'
+                  ? 'cursor-default opacity-50 text-muted-foreground'
+                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+              }`}
+            >
+              <X className="h-3.5 w-3.5" />
+              Cancel
+            </button>
+          ) : (
+            <div className="flex-1"></div>
+          )}
+          {componentOutput !== 'cancelled' ? (
+            <button
+              type="button"
+              disabled={!!componentOutput}
+              onClick={handleConfirm}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                componentOutput
+                  ? 'bg-primary/20 text-primary cursor-default'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90'
+              }`}
+            >
+              <Check className="h-3.5 w-3.5" />
+              {languages[selected].changeText}
+            </button>
+          ) : (
+            <div className="flex-1"></div>
+          )}
         </div>
       </div>
     );

@@ -25,12 +25,23 @@ const toComponentRenderPart = <
   const toolCall = part as UIToolInvocation<COMPONENT_MAP[K]>;
   const { input: _input, ...toolCallWithoutInput } = toolCall;
 
+  if (
+    toolCall.state === 'approval-requested' ||
+    toolCall.state === 'approval-responded' ||
+    toolCall.state === 'output-denied' ||
+    toolCall.state === 'output-error'
+  ) {
+    throw new Error(`Tool call state ${toolCall.state} is not supported`);
+  }
+
   return {
     type: 'render-component',
     componentId,
     state: toolCall.state,
     componentProps: {
       ...(toolCall.input as ComponentInputOf<COMPONENT_MAP[K]>),
+      componentState: toolCall.state,
+      componentOutput: toolCall.output,
       setComponentOutput: component.outputSchema
         ? (output: z.infer<typeof component.outputSchema> | 'cancelled') =>
             addToolOutput({
