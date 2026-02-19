@@ -2,6 +2,7 @@ import { UAIRenderComponentMessage } from '@uai/client';
 import { componentMap } from '../../components/component-map';
 import { formatChatMessageTimestamp } from './chat-message-timestamp';
 import { TypingIndicator } from './typing-indicator';
+import { useLogOnce } from '../../utils/use-log-once.hook';
 
 export function RenderComponent({
   message: {
@@ -11,8 +12,12 @@ export function RenderComponent({
 }: {
   message: UAIRenderComponentMessage<typeof componentMap>;
 }) {
+  const logComponentRendered = useLogOnce(componentId, 'Component rendered.');
+
   if (state === 'input-available' || state === 'output-available') {
     const Component = componentMap[componentId].component;
+
+    logComponentRendered(componentProps);
     return (
       <div>
         <div className="rounded-xl border border-border/50 bg-card/50 p-4">
