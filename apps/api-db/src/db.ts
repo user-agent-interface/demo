@@ -14,7 +14,7 @@ const DEMO_SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'shp-1',
     trackingNumber: '1Z999AA10123456784',
-    state: 'inTransit',
+    state: ['inTransit'],
     carrier: 'UPS',
     origin: {
       city: 'Warsaw',
@@ -35,7 +35,7 @@ const DEMO_SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'shp-2',
     trackingNumber: 'DHL9876543210PL',
-    state: 'delayed',
+    state: ['inTransit', 'delayed'],
     carrier: 'DHL',
     origin: {
       city: 'Kraków',
@@ -57,7 +57,7 @@ const DEMO_SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'shp-3',
     trackingNumber: 'FEDEX555666777',
-    state: 'delivered',
+    state: ['delivered'],
     carrier: 'FedEx',
     origin: {
       city: 'Gdańsk',
@@ -79,7 +79,7 @@ const DEMO_SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'shp-4',
     trackingNumber: 'INPOST123456789',
-    state: 'inTransit',
+    state: ['inTransit'],
     carrier: 'InPost',
     origin: {
       city: 'Wrocław',
@@ -100,7 +100,7 @@ const DEMO_SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'shp-5',
     trackingNumber: 'DPD444333222',
-    state: 'delayed',
+    state: ['inTransit', 'delayed'],
     carrier: 'DPD',
     origin: {
       city: 'Poznań',
@@ -135,7 +135,7 @@ export const db = {
   shipments: {
     getAll(state?: ShipmentState): Shipment[] {
       const list = Array.from(store.shipments.values());
-      if (state) return list.filter((s) => s.state === state);
+      if (state) return list.filter((s) => s.state.includes(state));
       return list;
     },
     getById(id: string): Shipment | undefined {

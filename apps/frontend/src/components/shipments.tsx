@@ -53,7 +53,8 @@ export const shipments = component({
 
     // Update markers when shipments data changes
     useEffect(() => {
-      if (!mapRef.current || !mapLoaded || !shipments || shipments.length === 0) return;
+      if (!mapRef.current || !mapLoaded || !shipments || shipments.length === 0)
+        return;
 
       // Clear existing markers
       markersRef.current.forEach((marker) => marker.remove());
@@ -70,7 +71,7 @@ export const shipments = component({
         positions.push([lng, lat]);
 
         // Determine marker color based on shipment state
-        const isDelayed = shipment.state === 'delayed';
+        const isDelayed = shipment.state.includes('delayed');
         const borderColor = isDelayed ? 'border-red-500' : 'border-accent';
         const bgColor = isDelayed ? 'bg-red-500' : 'bg-accent';
         const pingColor = isDelayed ? 'bg-red-500/30' : 'bg-accent/30';
@@ -83,9 +84,15 @@ export const shipments = component({
         root.render(
           <button className="absolute flex items-center justify-center transition-all duration-300 hover:scale-125">
             <div className="relative">
-              <div className={`absolute -inset-2 animate-ping rounded-full ${pingColor}`} />
-              <div className={`relative h-4 w-4 rounded-full border-2 ${borderColor} ${bgColor}/50`}>
-                <div className={`absolute inset-0 rounded-full ${bgColor}/30`} />
+              <div
+                className={`absolute -inset-2 animate-ping rounded-full ${pingColor}`}
+              />
+              <div
+                className={`relative h-4 w-4 rounded-full border-2 ${borderColor} ${bgColor}/50`}
+              >
+                <div
+                  className={`absolute inset-0 rounded-full ${bgColor}/30`}
+                />
               </div>
             </div>
           </button>

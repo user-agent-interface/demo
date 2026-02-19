@@ -14,7 +14,7 @@ export interface ShipmentAddress {
 export interface Shipment {
   id: string;
   trackingNumber: string;
-  state: ShipmentState;
+  state: ShipmentState[];
   carrier: string;
   origin: ShipmentAddress;
   destination: ShipmentAddress;
