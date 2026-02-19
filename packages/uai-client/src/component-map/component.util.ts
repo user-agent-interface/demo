@@ -1,7 +1,12 @@
 import { ZodType, z } from 'zod';
 
+export type ComponenToolState =
+  | 'input-available'
+  | 'input-streaming'
+  | 'output-available';
+
 type BaseReactComponentProps = {
-  componentState: 'input-available' | 'input-streaming' | 'output-available';
+  componentState: ComponenToolState;
 };
 
 export type ComponentAsTool<

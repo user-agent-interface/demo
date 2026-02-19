@@ -2,7 +2,10 @@ import type { ComponentRenderUIPart, UAIMessage } from './uai-message';
 import type { ComponentMap } from '../component-map/component-map';
 import type { ToolUIPart, UIToolInvocation } from 'ai';
 import type { AiSdkMessage } from './ai-sdk-message.format';
-import type { ComponentInputOf } from '../component-map/component.util';
+import type {
+  ComponentInputOf,
+  ComponenToolState,
+} from '../component-map/component.util';
 import { UseChatHelpers } from '@ai-sdk/react';
 import { z } from 'zod';
 
@@ -22,17 +25,10 @@ const toComponentRenderPart = <
   addToolOutput: UseChatHelpers<AiSdkMessage>['addToolOutput']
 ): ComponentRenderUIPart<COMPONENT_MAP, K> => {
   const component = componentMap[componentId];
-  const toolCall = part as UIToolInvocation<COMPONENT_MAP[K]>;
+  const toolCall = part as UIToolInvocation<COMPONENT_MAP[K]> & {
+    state: ComponenToolState;
+  };
   const { input: _input, ...toolCallWithoutInput } = toolCall;
-
-  if (
-    toolCall.state === 'approval-requested' ||
-    toolCall.state === 'approval-responded' ||
-    toolCall.state === 'output-denied' ||
-    toolCall.state === 'output-error'
-  ) {
-    throw new Error(`Tool call state ${toolCall.state} is not supported`);
-  }
 
   return {
     type: 'render-component',

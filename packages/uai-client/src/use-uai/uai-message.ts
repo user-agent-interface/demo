@@ -5,7 +5,10 @@ import {
   TextUIPart,
   UIToolInvocation,
 } from 'ai';
-import { ComponentInputOf } from '../component-map/component.util';
+import {
+  ComponentInputOf,
+  ComponenToolState,
+} from '../component-map/component.util';
 
 /**
  * UI Messages. They are used in the client and to communicate between the UAI client and the UAI server.
@@ -75,18 +78,12 @@ export type ComponentRenderUIPart<
     } & COMPONENT_MAP[K] &
       (
         | {
-            state: Extract<
-              UIToolInvocation<COMPONENT_MAP[K]>['state'],
-              'input-streaming'
-            >;
+            state: Extract<ComponenToolState, 'input-streaming'>;
             // input values are under streaming
             componentProps: Partial<ComponentInputOf<COMPONENT_MAP[K]>>;
           }
         | {
-            state: Exclude<
-              UIToolInvocation<COMPONENT_MAP[K]>['state'],
-              'input-streaming'
-            >;
+            state: Exclude<ComponenToolState, 'input-streaming'>;
             componentProps: ComponentInputOf<COMPONENT_MAP[K]>;
           }
       )
