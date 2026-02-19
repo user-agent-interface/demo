@@ -1,6 +1,7 @@
 import { UAIRenderComponentMessage } from '@uai/client';
 import { componentMap } from '../../components/component-map';
 import { formatChatMessageTimestamp } from './chat-message-timestamp';
+import { TypingIndicator } from './typing-indicator';
 
 export function RenderComponent({
   message: {
@@ -25,6 +26,10 @@ export function RenderComponent({
         </p>
       </div>
     );
+  } else if (state === 'input-streaming') {
+    // IN FUTURE: Some component may have an input-streaming state, while the component can be partially rendered
+    return <TypingIndicator />;
   }
+
   return null;
 }
