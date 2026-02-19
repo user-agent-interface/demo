@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { dbRouter } from './routes/db.js';
+import { router } from './router.js';
 
 dotenv.config();
 
@@ -14,14 +14,14 @@ app.use(express.json());
 
 // Routes
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     service: 'api-db',
-    timestamp: new Date().toISOString() 
+    timestamp: new Date().toISOString(),
   });
 });
 
-app.use('/api', dbRouter);
+app.use('/api', router);
 
 // Start server
 if (process.env.NODE_ENV !== 'production') {
@@ -32,4 +32,3 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Export for Vercel serverless
 export default app;
-
