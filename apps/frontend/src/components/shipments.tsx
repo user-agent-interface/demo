@@ -71,10 +71,23 @@ export const shipments = component({
         positions.push([lng, lat]);
 
         // Determine marker color based on shipment state
+        const isDelivered = shipment.state.includes('delivered');
         const isDelayed = shipment.state.includes('delayed');
-        const borderColor = isDelayed ? 'border-red-500' : 'border-accent';
-        const bgColor = isDelayed ? 'bg-red-500' : 'bg-accent';
-        const pingColor = isDelayed ? 'bg-red-500/30' : 'bg-accent/30';
+        const borderColor = isDelivered
+          ? 'border-green-500'
+          : isDelayed
+            ? 'border-red-500'
+            : 'border-accent';
+        const bgColor = isDelivered
+          ? 'bg-green-500'
+          : isDelayed
+            ? 'bg-red-500'
+            : 'bg-accent';
+        const pingColor = isDelivered
+          ? 'bg-green-500/30'
+          : isDelayed
+            ? 'bg-red-500/30'
+            : 'bg-accent/30';
 
         // Create custom marker element
         const markerElement = document.createElement('div');
