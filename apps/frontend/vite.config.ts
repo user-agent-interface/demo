@@ -8,9 +8,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Use source in dev so uai-client doesn't need to be built first
       '@uai/client': path.resolve(
         __dirname,
-        '../../packages/uai-client/dist/index.js'
+        '../../packages/uai-client/src/index.ts'
       ),
     },
   },
