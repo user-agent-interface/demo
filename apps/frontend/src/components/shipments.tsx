@@ -32,7 +32,7 @@ export const shipments = component({
     const {
       data: shipments,
       error,
-      isLoading,
+      isLoading: isShipmentsLoading,
     } = useSWR<Shipment[]>(`/api/shipments?state=${filter}`, fetcher, {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
@@ -143,7 +143,7 @@ export const shipments = component({
       };
     }, []);
 
-    const isLoadingData = isLoading || !mapLoaded;
+    const isLoadingData = isShipmentsLoading || !mapLoaded;
     const hasError = error !== undefined;
 
     return (
@@ -153,7 +153,8 @@ export const shipments = component({
             <div className="flex flex-col items-center gap-3">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
               <span className="text-sm font-medium text-muted-foreground">
-                {isLoading ? 'Loading shipments…' : 'Loading map…'}
+                {isShipmentsLoading && 'Loading shipments…'}
+                {!mapLoaded && 'Loading map…'}
               </span>
             </div>
           </div>
