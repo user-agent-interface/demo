@@ -11,7 +11,7 @@ const initialMessages = defineInitialMessages([
   {
     id: 'initial',
     role: 'assistant',
-    text: 'Greetings, Operator!\nI am your advanced agent, ready to assist with any query or task you require.\n\nHow may I be of service today?',
+    text: 'Greetings, Operator!\nHow may I be of service today?',
   },
 ]);
 
