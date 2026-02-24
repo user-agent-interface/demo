@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Map, Marker, LngLatBounds } from 'mapbox-gl';
 import useSWR from 'swr';
-import { mapBox } from '../utils/mapbox';
-import { fetcher } from '../utils/api';
+import { mapBox } from '../../utils/mapbox';
+import { fetcher } from '../../utils/api';
 import type { Shipment } from '@uai/shared';
 
 export const shipments = component({

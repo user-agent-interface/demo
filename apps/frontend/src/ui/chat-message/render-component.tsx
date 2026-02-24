@@ -1,5 +1,5 @@
 import { UAIRenderComponentMessage } from '@uai/client';
-import { componentMap } from '../../components/component-map';
+import { componentMap } from '../../components/uai-component-map';
 import { formatChatMessageTimestamp } from './chat-message-timestamp';
 import { TypingIndicator } from './typing-indicator';
 import { useLogOnce } from '../../utils/use-log-once.hook';

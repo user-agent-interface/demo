@@ -1,7 +1,7 @@
 import { defineComponentMap } from '@uai/client';
-import { shipments } from './shipments';
-import { signOut } from './sign-out';
-import { changeLanguage } from './change-language';
+import { shipments } from './uai/shipments';
+import { signOut } from './uai/sign-out';
+import { changeLanguage } from './uai/change-language';
 
 export const componentMap = defineComponentMap({
   shipments,

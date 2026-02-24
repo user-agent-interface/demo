@@ -3,7 +3,7 @@ import { ChatMessages } from './ui/chat-message/chat-messages';
 import { ChatHeader } from './ui/header';
 import { ChatInput } from './ui/chat-input';
 import { useUai, defineInitialMessages } from '@uai/client';
-import { componentMap } from './components/component-map';
+import { componentMap } from './components/uai-component-map';
 
 const uaiServerUrl = `${import.meta.env.VITE_UAI_SERVER_HOST_URL}/api/uai-server`;
 

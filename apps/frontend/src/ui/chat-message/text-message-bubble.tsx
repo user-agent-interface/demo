@@ -1,5 +1,5 @@
 import { UAITextMessage } from '@uai/client';
-import { componentMap } from '../../components/component-map';
+import { componentMap } from '../../components/uai-component-map';
 import { cn } from '../../utils/cn';
 import { Bot, User } from 'lucide-react';
 import { formatChatMessageTimestamp } from './chat-message-timestamp';
