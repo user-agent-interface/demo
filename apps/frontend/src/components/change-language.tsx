@@ -2,25 +2,30 @@ import { component, schema } from '@uai/client';
 import { useState } from 'react';
 import { Check, X } from 'lucide-react';
 
-type Language = 'en' | 'de' | 'es';
+type Language = 'english' | 'german' | 'spanish' | 'hungarian';
 const languages: Record<
   Language,
   { name: string; flag: string; changeText: string }
 > = {
-  en: {
+  english: {
     name: 'English',
     flag: '🇺🇸',
     changeText: 'Set language to English',
   },
-  de: {
+  german: {
     name: 'Deutsch',
     flag: '🇩🇪',
-    changeText: 'Setze die Sprache auf Deutsch', // in german: Set language to English
+    changeText: 'Sprache auf Deutsch einstellen', // in german: Set language to German
   },
-  es: {
+  spanish: {
     name: 'Español',
     flag: '🇪🇸',
-    changeText: 'Establecer el idioma a Español', // in spanish: Set language to English
+    changeText: 'Establecer idioma a Español', // in spanish: Set language to Spanish
+  },
+  hungarian: {
+    name: 'Magyar',
+    flag: '🇭🇺',
+    changeText: 'Nyelv beállítása magyarra', // in hungarian: Set language to Hungarian
   },
 };
 const languagesArray = Object.keys(languages) as Language[];
@@ -39,7 +44,7 @@ export const changeLanguage = component({
     setComponentOutput,
   }) {
     const [selected, setSelected] = useState<Language>(
-      preferredLanguage || 'en'
+      preferredLanguage || 'english'
     );
     const [isOpen, setIsOpen] = useState(false);
 
