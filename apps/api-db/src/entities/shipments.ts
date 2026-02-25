@@ -3,7 +3,6 @@ import { Shipment } from '@uai/shared';
 export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'shp-1',
-    trackingNumber: '1Z999AA10123456784',
     state: ['inTransit'],
     carrier: 'UPS',
     origin: {
@@ -18,13 +17,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Friedrichstraße 123',
       position: [52.52, 13.4],
     },
-    estimatedDelivery: '2025-02-22',
-    originalEstimatedDelivery: '2025-02-22',
+    estimatedDeliveryDate: '2025-02-22T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-22T09:00:00.000Z',
     actualPosition: [52.4, 16.9], // between Warsaw and Berlin (Poznań area)
   },
   {
     id: 'shp-2',
-    trackingNumber: 'DHL9876543210PL',
     state: ['inTransit', 'delayed'],
     carrier: 'DHL',
     origin: {
@@ -39,14 +37,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Marienplatz 1',
       position: [48.14, 11.58],
     },
-    estimatedDelivery: '2025-02-20',
-    originalEstimatedDelivery: '2025-02-19',
+    estimatedDeliveryDate: '2025-02-20T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-19T09:00:00.000Z',
     delayReason: 'Customs clearance',
     actualPosition: [49.5, 17.5], // near PL/DE border (customs)
   },
   {
     id: 'shp-3',
-    trackingNumber: 'FEDEX555666777',
     state: ['delivered'],
     carrier: 'FedEx',
     origin: {
@@ -61,14 +58,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Damrak 1',
       position: [52.37, 4.89],
     },
-    estimatedDelivery: '2025-02-18',
-    originalEstimatedDelivery: '2025-02-18',
-    actualDelivery: '2025-02-18T16:45:00.000Z',
+    estimatedDeliveryDate: '2025-02-18T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-18T09:00:00.000Z',
+    finalDeliveryDate: '2025-02-18T16:45:00.000Z',
     actualPosition: [52.37, 4.89], // Amsterdam (delivered at destination)
   },
   {
     id: 'shp-4',
-    trackingNumber: 'INPOST123456789',
     state: ['inTransit'],
     carrier: 'InPost',
     origin: {
@@ -83,13 +79,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Staroměstské nám. 1',
       position: [50.08, 14.44],
     },
-    estimatedDelivery: '2025-02-23',
-    originalEstimatedDelivery: '2025-02-23',
+    estimatedDeliveryDate: '2025-02-23T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-23T09:00:00.000Z',
     actualPosition: [50.5, 15.5], // between Wrocław and Prague
   },
   {
     id: 'shp-5',
-    trackingNumber: 'DPD444333222',
     state: ['inTransit', 'delayed'],
     carrier: 'DPD',
     origin: {
@@ -104,14 +99,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Stephansplatz 1',
       position: [48.21, 16.37],
     },
-    estimatedDelivery: '2025-02-21',
-    originalEstimatedDelivery: '2025-02-20',
+    estimatedDeliveryDate: '2025-02-21T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-20T09:00:00.000Z',
     delayReason: 'Weather conditions',
     actualPosition: [50.0, 17.0], // between Poznań and Vienna (delayed)
   },
   {
     id: 'shp-6',
-    trackingNumber: 'UPS7890123456',
     state: ['inTransit'],
     carrier: 'UPS',
     origin: {
@@ -126,13 +120,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Bahnhofstrasse 1',
       position: [47.38, 8.54],
     },
-    estimatedDelivery: '2025-02-24',
-    originalEstimatedDelivery: '2025-02-24',
+    estimatedDeliveryDate: '2025-02-24T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-24T09:00:00.000Z',
     actualPosition: [50.5, 12.0], // between Łódź and Zurich
   },
   {
     id: 'shp-7',
-    trackingNumber: 'DHL1112223334',
     state: ['delivered'],
     carrier: 'DHL',
     origin: {
@@ -147,14 +140,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Grand Place 1',
       position: [50.85, 4.35],
     },
-    estimatedDelivery: '2025-02-19',
-    originalEstimatedDelivery: '2025-02-19',
-    actualDelivery: '2025-02-19T14:30:00.000Z',
+    estimatedDeliveryDate: '2025-02-19T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-19T09:00:00.000Z',
+    finalDeliveryDate: '2025-02-19T14:30:00.000Z',
     actualPosition: [50.85, 4.35], // Brussels (delivered)
   },
   {
     id: 'shp-8',
-    trackingNumber: 'FEDEX888777666',
     state: ['inTransit'],
     carrier: 'FedEx',
     origin: {
@@ -169,13 +161,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Strøget 1',
       position: [55.68, 12.57],
     },
-    estimatedDelivery: '2025-02-25',
-    originalEstimatedDelivery: '2025-02-25',
+    estimatedDeliveryDate: '2025-02-25T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-25T09:00:00.000Z',
     actualPosition: [54.5, 13.5], // between Szczecin and Copenhagen
   },
   {
     id: 'shp-9',
-    trackingNumber: 'INPOST999888777',
     state: ['inTransit', 'delayed'],
     carrier: 'InPost',
     origin: {
@@ -190,14 +181,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Váci utca 1',
       position: [47.5, 19.04],
     },
-    estimatedDelivery: '2025-02-22',
-    originalEstimatedDelivery: '2025-02-21',
+    estimatedDeliveryDate: '2025-02-22T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-21T09:00:00.000Z',
     delayReason: 'Route optimization',
     actualPosition: [49.0, 20.0], // between Lublin and Budapest
   },
   {
     id: 'shp-10',
-    trackingNumber: 'DPD555444333',
     state: ['delivered'],
     carrier: 'DPD',
     origin: {
@@ -212,14 +202,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Gedimino pr. 1',
       position: [54.69, 25.28],
     },
-    estimatedDelivery: '2025-02-20',
-    originalEstimatedDelivery: '2025-02-20',
-    actualDelivery: '2025-02-20T10:15:00.000Z',
+    estimatedDeliveryDate: '2025-02-20T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-20T09:00:00.000Z',
+    finalDeliveryDate: '2025-02-20T10:15:00.000Z',
     actualPosition: [54.69, 25.28], // Vilnius (delivered)
   },
   {
     id: 'shp-11',
-    trackingNumber: 'UPS2223334445',
     state: ['inTransit'],
     carrier: 'UPS',
     origin: {
@@ -234,13 +223,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Drottninggatan 1',
       position: [59.33, 18.07],
     },
-    estimatedDelivery: '2025-02-26',
-    originalEstimatedDelivery: '2025-02-26',
+    estimatedDeliveryDate: '2025-02-26T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-26T09:00:00.000Z',
     actualPosition: [57.0, 18.0], // between Gdynia and Stockholm
   },
   {
     id: 'shp-12',
-    trackingNumber: 'DHL6665554443',
     state: ['inTransit'],
     carrier: 'DHL',
     origin: {
@@ -255,13 +243,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Mönckebergstraße 1',
       position: [53.55, 10.0],
     },
-    estimatedDelivery: '2025-02-23',
-    originalEstimatedDelivery: '2025-02-23',
+    estimatedDeliveryDate: '2025-02-23T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-23T09:00:00.000Z',
     actualPosition: [53.3, 14.0], // between Toruń and Hamburg
   },
   {
     id: 'shp-13',
-    trackingNumber: 'FEDEX333222111',
     state: ['delivered'],
     carrier: 'FedEx',
     origin: {
@@ -276,14 +263,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Hlavné námestie 1',
       position: [48.14, 17.11],
     },
-    estimatedDelivery: '2025-02-19',
-    originalEstimatedDelivery: '2025-02-19',
-    actualDelivery: '2025-02-19T12:00:00.000Z',
+    estimatedDeliveryDate: '2025-02-19T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-19T09:00:00.000Z',
+    finalDeliveryDate: '2025-02-19T12:00:00.000Z',
     actualPosition: [48.14, 17.11], // Bratislava (delivered)
   },
   {
     id: 'shp-14',
-    trackingNumber: 'INPOST444555666',
     state: ['inTransit', 'delayed'],
     carrier: 'InPost',
     origin: {
@@ -298,14 +284,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Raekoja plats 1',
       position: [59.44, 24.75],
     },
-    estimatedDelivery: '2025-02-24',
-    originalEstimatedDelivery: '2025-02-23',
+    estimatedDeliveryDate: '2025-02-24T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-23T09:00:00.000Z',
     delayReason: 'Ferry schedule change',
     actualPosition: [56.0, 22.0], // between Olsztyn and Tallinn
   },
   {
     id: 'shp-15',
-    trackingNumber: 'DPD777888999',
     state: ['inTransit'],
     carrier: 'DPD',
     origin: {
@@ -320,13 +305,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Coolsingel 1',
       position: [51.92, 4.48],
     },
-    estimatedDelivery: '2025-02-22',
-    originalEstimatedDelivery: '2025-02-22',
+    estimatedDeliveryDate: '2025-02-22T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-22T09:00:00.000Z',
     actualPosition: [52.5, 11.0], // between Bydgoszcz and Rotterdam
   },
   {
     id: 'shp-16',
-    trackingNumber: 'UPS1234567890',
     state: ['delivered'],
     carrier: 'UPS',
     origin: {
@@ -341,14 +325,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Plac Zamkowy 1',
       position: [52.23, 21.01],
     },
-    estimatedDelivery: '2025-02-18',
-    originalEstimatedDelivery: '2025-02-18',
-    actualDelivery: '2025-02-18T09:30:00.000Z',
+    estimatedDeliveryDate: '2025-02-18T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-18T09:00:00.000Z',
+    finalDeliveryDate: '2025-02-18T09:30:00.000Z',
     actualPosition: [52.23, 21.01], // Warsaw (delivered)
   },
   {
     id: 'shp-17',
-    trackingNumber: 'DHL9876543210',
     state: ['inTransit'],
     carrier: 'DHL',
     origin: {
@@ -363,13 +346,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Champs-Élysées 1',
       position: [48.86, 2.35],
     },
-    estimatedDelivery: '2025-02-27',
-    originalEstimatedDelivery: '2025-02-27',
+    estimatedDeliveryDate: '2025-02-27T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-27T09:00:00.000Z',
     actualPosition: [50.0, 12.0], // between Radom and Paris
   },
   {
     id: 'shp-18',
-    trackingNumber: 'FEDEX246813579',
     state: ['inTransit', 'delayed'],
     carrier: 'FedEx',
     origin: {
@@ -384,14 +366,13 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Piazza del Duomo 1',
       position: [45.46, 9.19],
     },
-    estimatedDelivery: '2025-02-25',
-    originalEstimatedDelivery: '2025-02-24',
+    estimatedDeliveryDate: '2025-02-25T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-24T09:00:00.000Z',
     delayReason: 'Alpine weather conditions',
     actualPosition: [47.0, 14.0], // between Sosnowiec and Milan
   },
   {
     id: 'shp-19',
-    trackingNumber: 'INPOST135792468',
     state: ['inTransit'],
     carrier: 'InPost',
     origin: {
@@ -406,13 +387,12 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Altmarkt 1',
       position: [51.05, 13.74],
     },
-    estimatedDelivery: '2025-02-21',
-    originalEstimatedDelivery: '2025-02-21',
+    estimatedDeliveryDate: '2025-02-21T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-21T09:00:00.000Z',
     actualPosition: [51.5, 14.5], // between Zielona Góra and Dresden
   },
   {
     id: 'shp-20',
-    trackingNumber: 'DPD8642097531',
     state: ['delivered'],
     carrier: 'DPD',
     origin: {
@@ -427,9 +407,9 @@ export const SHIPMENTS: Omit<Shipment, 'createdAt' | 'updatedAt'>[] = [
       addressLine: 'Rynek 1',
       position: [51.11, 17.04],
     },
-    estimatedDelivery: '2025-02-19',
-    originalEstimatedDelivery: '2025-02-19',
-    actualDelivery: '2025-02-19T16:20:00.000Z',
+    estimatedDeliveryDate: '2025-02-19T17:30:00.000Z',
+    originalEstimatedDeliveryDate: '2025-02-19T09:00:00.000Z',
+    finalDeliveryDate: '2025-02-19T16:20:00.000Z',
     actualPosition: [51.11, 17.04], // Wrocław (delivered)
   },
 ];

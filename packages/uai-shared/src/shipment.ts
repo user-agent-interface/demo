@@ -13,14 +13,13 @@ export interface ShipmentAddress {
 
 export interface Shipment {
   id: string;
-  trackingNumber: string;
   state: ShipmentState[];
   carrier: string;
   origin: ShipmentAddress;
   destination: ShipmentAddress;
-  estimatedDelivery: string; // ISO date (current/revised estimate)
-  originalEstimatedDelivery: string; // ISO date (initial estimate; for delayed shipments may differ from estimatedDelivery)
-  actualDelivery?: string; // ISO date, set when delivered
+  estimatedDeliveryDate: string; // ISO datetime (minute precision; current/revised estimate)
+  originalEstimatedDeliveryDate: string; // ISO datetime (minute precision; initial estimate; for delayed shipments may differ from estimatedDelivery)
+  finalDeliveryDate?: string; // ISO datetime (minute precision; set when delivered)
   delayReason?: string; // set when state is delayed
   /** Current position [lat, lng] for map display */
   actualPosition?: LatLng;
