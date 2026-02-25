@@ -1,29 +1,9 @@
-import 'mapbox-gl/dist/mapbox-gl.css';
-
 import { component, schema } from '@uai/client';
-import { useEffect, useRef, useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import { Map, Marker, LngLatBounds, Popup } from 'mapbox-gl';
+import { useMemo } from 'react';
 import useSWR from 'swr';
-import { mapBox } from '../../utils/mapbox';
 import { fetcher } from '../../utils/api';
 import type { Shipment } from '@uai/shared';
-
-const formatEta = (isoString: string) => {
-  if (!isoString) return 'N/A';
-
-  const date = new Date(isoString);
-  if (Number.isNaN(date.getTime())) return isoString;
-
-  return new Intl.DateTimeFormat(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZoneName: 'short',
-  }).format(date);
-};
+import { Shipments as ShipmentsMap, Marker } from '../map';
 
 export const shipments = component({
   description: 'Show shipments',
@@ -40,11 +20,6 @@ export const shipments = component({
     displayType: 'map' | 'list';
     filter: 'inTransit' | 'delayed' | 'delivered';
   }) {
-    const mapRef = useRef<Map>(null);
-    const markersRef = useRef<Marker[]>([]);
-    const [mapLoaded, setMapLoaded] = useState(false);
-
-    // Fetch shipments
     const {
       data: shipments,
       error,
@@ -54,168 +29,65 @@ export const shipments = component({
       revalidateOnReconnect: true,
     });
 
-    const mapContainerCallbackRef = (mapContainer: HTMLDivElement) => {
-      if (mapRef.current !== null) return;
+    const markers = useMemo<Marker[]>(() => {
+      if (!shipments) return [];
 
-      const map = new mapBox.Map({
-        container: mapContainer,
-        center: [16.37, 48.21], // starting position [lng, lat]: Vienna, Austria
-        zoom: 9, // starting zoom
-      });
-      mapRef.current = map;
-
-      map.on('load', () => setMapLoaded(true));
-    };
-
-    // Update markers when shipments data changes
-    useEffect(() => {
-      if (!mapRef.current || !mapLoaded || !shipments || shipments.length === 0)
-        return;
-
-      // Clear existing markers
-      markersRef.current.forEach((marker) => marker.remove());
-      markersRef.current = [];
-
-      // Collect all positions for bounds calculation
-      const positions: [number, number][] = [];
-
-      // Add markers for each shipment
-      shipments.forEach((shipment) => {
-        const position =
-          shipment.actualPosition || shipment.destination.position;
-        const [lat, lng] = position;
-        positions.push([lng, lat]);
-
-        // Determine marker color based on shipment state
+      return shipments.map((shipment) => {
         const isDelivered = shipment.state.includes('delivered');
         const isDelayed = shipment.state.includes('delayed');
+
         const borderColor = isDelivered
           ? 'border-green-500'
           : isDelayed
             ? 'border-red-500'
             : 'border-accent';
+
         const bgColor = isDelivered
           ? 'bg-green-500'
           : isDelayed
             ? 'bg-red-500'
             : 'bg-accent';
-        const pingColor = isDelivered
-          ? 'bg-green-500/30'
-          : isDelayed
-            ? 'bg-red-500/30'
-            : 'bg-accent/30';
 
-        // Create popup content for this shipment
-        const popupContent = document.createElement('div');
-        popupContent.className =
-          'text-xs space-y-1 max-w-[220px] text-primary-foreground relative pr-8';
-        popupContent.innerHTML = `
-          <button type="button" class="popup-close-btn absolute -top-2.5 -right-2.5 flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground" aria-label="Close">
-            <span class="text-lg leading-none">×</span>
-          </button>
-          <div class="font-semibold text-sm mb-1">Shipment ${shipment.id}</div>
-          <div><span class="font-medium">State:</span> ${shipment.state.join(
-            ', '
-          )}</div>
-          <div><span class="font-medium">From:</span> ${
-            shipment.origin.city
-          }, ${shipment.origin.country}</div>
-          <div><span class="font-medium">To:</span> ${
-            shipment.destination.city
-          }, ${shipment.destination.country}</div>
-          <div><span class="font-medium">ETA:</span> ${formatEta(
-            shipment.estimatedDeliveryDate
-          )}</div>
-        `;
+        const position = shipment.actualPosition || shipment.origin.position;
 
-        const popup = new Popup({
-          closeOnClick: true,
-          closeButton: false,
-        }).setDOMContent(popupContent);
-
-        popupContent
-          .querySelector('.popup-close-btn')
-          ?.addEventListener('click', () => popup.remove());
-
-        // Create custom marker element
-        const markerElement = document.createElement('div');
-
-        // Render React component with Tailwind classes into the marker element
-        const root = createRoot(markerElement);
-        root.render(
-          <button className="flex h-6 w-6 items-center justify-center transition-all duration-300 hover:scale-125 hover:cursor-pointer">
-            <div className="relative">
-              <div
-                className={`absolute -inset-2 animate-ping rounded-full ${pingColor}`}
-              />
-              <div
-                className={`relative h-4 w-4 rounded-full border-2 ${borderColor} ${bgColor}/50`}
-              >
-                <div
-                  className={`absolute inset-0 rounded-full ${bgColor}/30`}
-                />
-              </div>
+        const popup = (
+          <div className="text-xs space-y-1 max-w-[220px] text-primary-foreground relative pr-8">
+            <div className="font-semibold text-sm mb-1">
+              Shipment {shipment.id}
             </div>
-          </button>
+            <div>
+              <span className="font-medium">State:</span>{' '}
+              {shipment.state.join(', ')}
+            </div>
+            <div>
+              <span className="font-medium">From:</span> {shipment.origin.city},{' '}
+              {shipment.origin.country}
+            </div>
+            <div>
+              <span className="font-medium">To:</span>{' '}
+              {shipment.destination.city}, {shipment.destination.country}
+            </div>
+            <div>
+              <span className="font-medium">ETA:</span>{' '}
+              {formatEta(shipment.estimatedDeliveryDate)}
+            </div>
+          </div>
         );
 
-        // Add marker to map with popup
-        const marker = new mapBox.Marker({
-          element: markerElement,
-          anchor: 'center',
-        })
-          .setLngLat([lng, lat])
-          .setPopup(popup)
-          .addTo(mapRef.current!);
-
-        // Ensure popup toggles on marker click
-        marker.getElement().addEventListener('click', () => {
-          marker.togglePopup();
-        });
-        markersRef.current.push(marker);
+        return {
+          position,
+          bgColor,
+          borderColor,
+          popup,
+        };
       });
+    }, [shipments]);
 
-      // Fit map bounds to include all markers
-      if (positions.length > 0) {
-        const bounds = new LngLatBounds();
-        positions.forEach(([lng, lat]) => {
-          bounds.extend([lng, lat]);
-        });
-
-        mapRef.current.fitBounds(bounds, {
-          padding: { top: 50, bottom: 50, left: 50, right: 50 },
-          maxZoom: 12, // Prevent zooming in too much
-        });
-      }
-    }, [shipments, mapLoaded]);
-
-    // Cleanup on unmount
-    useEffect(() => {
-      return () => {
-        markersRef.current.forEach((marker) => marker.remove());
-        if (mapRef.current) {
-          mapRef.current.remove();
-          mapRef.current = null;
-        }
-      };
-    }, []);
-
-    const isLoadingData = isShipmentsLoading || !mapLoaded;
+    const isLoadingData = isShipmentsLoading;
     const hasError = error !== undefined;
 
     return (
-      <div className="relative map-container h-96 -m-4">
-        {isLoadingData && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-muted/80 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
-              <span className="text-sm font-medium text-muted-foreground">
-                {isShipmentsLoading && 'Loading shipments…'}
-                {!mapLoaded && 'Loading map…'}
-              </span>
-            </div>
-          </div>
-        )}
+      <div className="relative">
         {hasError && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-muted/80 backdrop-blur-sm">
             <div className="flex flex-col items-center gap-3">
@@ -225,8 +97,30 @@ export const shipments = component({
             </div>
           </div>
         )}
-        <div ref={mapContainerCallbackRef} className="h-full w-full" />
+
+        <ShipmentsMap
+          initial={{ position: [16.37, 48.21], zoom: 9 }} // Vienna, Austria
+          markers={markers}
+          loading={isLoadingData ? 'Loading shipments…' : undefined}
+        />
       </div>
     );
   },
 });
+
+// Utils
+const formatEta = (isoString: string) => {
+  if (!isoString) return 'N/A';
+
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return isoString;
+
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  }).format(date);
+};
