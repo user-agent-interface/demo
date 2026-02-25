@@ -65,7 +65,9 @@ export type ComponentAsTool<
 export type ComponentDefinition<
   INPUT extends object,
   OUTPUT extends object | undefined = undefined,
-> = (IsEmptyObject<Omit<INPUT, 'setComponentOutput' | 'output'>> extends true
+> = (IsEmptyObject<
+  Omit<INPUT, 'setComponentOutput' | 'componentOutput'>
+> extends true
   ? Omit<ComponentAsTool<INPUT, OUTPUT>, 'inputSchema'> & {
       // allow undefined INPUT, we default to a matching empty-schema
       inputSchema?: ZodType<INPUT>;

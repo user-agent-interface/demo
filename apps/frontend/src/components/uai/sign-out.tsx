@@ -3,7 +3,6 @@ import { X, LogOut } from 'lucide-react';
 
 export const signOut = component({
   description: 'Sign out from the application',
-  inputSchema: schema.object({}),
   outputSchema: schema.object({
     signedOut: schema.boolean(),
   }),
