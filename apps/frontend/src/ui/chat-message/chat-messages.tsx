@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { UAIMessage } from '@uai/client';
-import { componentMap } from '../../components/uai-component-map';
+import { componentMap } from '../../components/uai/component-map';
 import { TextMessageBubble } from './text-message-bubble';
 import { RenderComponent } from './render-component';
 import { TypingIndicator } from './typing-indicator';
