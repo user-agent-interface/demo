@@ -2,8 +2,12 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { flushSync } from 'react-dom';
-import { Map, Marker as MapboxMarker, LngLatBounds, Popup } from 'mapbox-gl';
+import {
+  Map as MapboxMap,
+  Marker as MapboxMarker,
+  LngLatBounds,
+  Popup,
+} from 'mapbox-gl';
 import { mapBox } from '../utils/mapbox';
 
 export type Marker = {
@@ -13,7 +17,7 @@ export type Marker = {
   popup?: ReactElement;
 };
 
-export const Shipments = ({
+export const Map = ({
   initial,
   markers,
   loading,
@@ -25,7 +29,7 @@ export const Shipments = ({
   markers: Marker[];
   loading?: string;
 }) => {
-  const mapRef = useRef<Map>(null);
+  const mapRef = useRef<MapboxMap>(null);
   const markersRef = useRef<MapboxMarker[]>([]);
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -53,7 +57,7 @@ export const Shipments = ({
     // Collect all positions for bounds calculation
     const positions: [number, number][] = [];
 
-    // Add markers for each shipment
+    // Add markers to the map
     markers.forEach(({ position, bgColor, borderColor, popup }) => {
       const [lat, lng] = position;
       positions.push([lng, lat]);
@@ -66,21 +70,19 @@ export const Shipments = ({
         const popupRoot = createRoot(popupContainer);
         let closePopup: (() => void) | null = null;
 
-        flushSync(() => {
-          popupRoot.render(
-            <div className="relative">
-              {popup}
-              <button
-                type="button"
-                className="popup-close-btn absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
-                aria-label="Close"
-                onClick={() => closePopup?.()}
-              >
-                <span className="text-lg leading-none">×</span>
-              </button>
-            </div>
-          );
-        });
+        popupRoot.render(
+          <div className="relative">
+            {popup}
+            <button
+              type="button"
+              className="popup-close-btn absolute top-0 right-0 flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+              aria-label="Close"
+              onClick={() => closePopup?.()}
+            >
+              <span className="text-lg leading-none">×</span>
+            </button>
+          </div>
+        );
 
         mapboxPopup = new Popup({
           closeOnClick: true,

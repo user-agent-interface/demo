@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '../../utils/api';
 import type { Shipment } from '@uai/shared';
-import { Shipments as ShipmentsMap, Marker } from '../map';
+import { Map as ShipmentsMap, Marker } from '../map';
 
 export const shipments = component({
   description: 'Show shipments',
@@ -83,7 +83,6 @@ export const shipments = component({
       });
     }, [shipments]);
 
-    const isLoadingData = isShipmentsLoading;
     const hasError = error !== undefined;
 
     return (
@@ -101,7 +100,7 @@ export const shipments = component({
         <ShipmentsMap
           initial={{ position: [16.37, 48.21], zoom: 9 }} // Vienna, Austria
           markers={markers}
-          loading={isLoadingData ? 'Loading shipments…' : undefined}
+          loading={isShipmentsLoading ? 'Loading shipments…' : undefined}
         />
       </div>
     );
