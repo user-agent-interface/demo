@@ -51,7 +51,7 @@ export const shipments = component({
         const position = shipment.actualPosition || shipment.origin.position;
 
         const popup = (
-          <div className="text-xs space-y-1 max-w-[220px] text-primary-foreground relative pr-8">
+          <div className="text-xs space-y-1 max-w-[220px] text-muted-foreground relative pr-8">
             <div className="font-semibold text-sm mb-1">
               Shipment {shipment.id}
             </div>
