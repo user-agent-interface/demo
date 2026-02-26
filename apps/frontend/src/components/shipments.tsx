@@ -3,15 +3,18 @@ import useSWR from 'swr';
 import { fetcher } from '../utils/api';
 import type { Shipment } from '@uai/shared';
 import { Map, Marker } from './map';
+import { Check } from 'lucide-react';
 
 export function Shipments({
   displayType,
   filter,
   onSelect,
+  selectedShipmentId,
 }: {
   displayType: 'map' | 'list';
   filter: 'inTransit' | 'delayed' | 'delivered';
   onSelect?: (shipment: Shipment) => void;
+  selectedShipmentId?: string;
 }) {
   const {
     data: shipments,
@@ -65,14 +68,21 @@ export function Shipments({
             {formatEta(shipment.estimatedDeliveryDate)}
           </div>
           {onSelect && (
-            <div className="pt-2 flex justify-end">
-              <button
-                type="button"
-                className="inline-flex items-center rounded-md bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                onClick={() => onSelect(shipment)}
-              >
-                Select
-              </button>
+            <div className="pt-2 flex justify-start">
+              {selectedShipmentId === undefined ? (
+                <button
+                  type="button"
+                  className="inline-flex items-center rounded-md bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  onClick={() => onSelect(shipment)}
+                >
+                  Select
+                </button>
+              ) : selectedShipmentId === shipment.id ? (
+                <div className="inline-flex items-center rounded-md border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-600">
+                  <Check className="mr-1.5 h-3 w-3" />
+                  Selected
+                </div>
+              ) : null}
             </div>
           )}
         </div>
@@ -85,7 +95,7 @@ export function Shipments({
         popup,
       };
     });
-  }, [displayType, shipments, onSelect]);
+  }, [displayType, shipments, onSelect, selectedShipmentId]);
 
   const hasError = error !== undefined;
 
@@ -143,12 +153,17 @@ export function Shipments({
               {shipments.map((shipment) => {
                 const isDelivered = shipment.state.includes('delivered');
                 const isDelayed = shipment.state.includes('delayed');
+                const state = isDelayed
+                  ? 'delayed'
+                  : isDelivered
+                    ? 'delivered'
+                    : 'inTransit';
 
                 const statusClasses = isDelivered
                   ? 'bg-green-500/10 text-green-500 border border-green-500/20'
                   : isDelayed
                     ? 'bg-red-500/10 text-red-500 border border-red-500/20'
-                    : 'bg-accent/10 text-accent-foreground border border-accent/20';
+                    : 'bg-accent/10 text-muted-foreground border border-accent/20';
 
                 return (
                   <tr
@@ -171,7 +186,7 @@ export function Shipments({
                       <div
                         className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${statusClasses}`}
                       >
-                        {shipment.state.join(', ')}
+                        {state}
                       </div>
                     </td>
                     <td className="px-4 py-3 align-top text-sm text-muted-foreground">
@@ -193,13 +208,20 @@ export function Shipments({
                     </td>
                     {onSelect && (
                       <td className="px-4 py-3 align-top text-right">
-                        <button
-                          type="button"
-                          className="inline-flex items-center rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                          onClick={() => onSelect(shipment)}
-                        >
-                          Select
-                        </button>
+                        {selectedShipmentId === undefined ? (
+                          <button
+                            type="button"
+                            className="inline-flex items-center rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            onClick={() => onSelect(shipment)}
+                          >
+                            Select
+                          </button>
+                        ) : selectedShipmentId === shipment.id ? (
+                          <div className="inline-flex items-center rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600">
+                            <Check className="mr-1.5 h-3.5 w-3.5" />
+                            Selected
+                          </div>
+                        ) : null}
                       </td>
                     )}
                   </tr>

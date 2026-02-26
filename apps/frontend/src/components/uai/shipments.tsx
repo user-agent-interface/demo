@@ -28,6 +28,7 @@ export const selectShipment = component({
     displayType,
     filter,
     setComponentOutput,
+    componentOutput,
   }) {
     const handleSelectShipment = useCallback(
       (shipment: Shipment) => {
@@ -42,6 +43,11 @@ export const selectShipment = component({
         displayType={displayType}
         filter={filter}
         onSelect={handleSelectShipment}
+        selectedShipmentId={
+          componentOutput !== 'cancelled'
+            ? componentOutput?.selectedShipmentId
+            : undefined
+        }
       />
     );
   },
