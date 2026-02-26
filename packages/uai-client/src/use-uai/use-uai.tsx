@@ -5,6 +5,7 @@ import {
   ChatOnFinishCallback,
   ChatStatus,
   DefaultChatTransport,
+  lastAssistantMessageIsCompleteWithToolCalls,
 } from 'ai';
 import { type ComponentMap } from '../component-map/component-map';
 import { convertComponentMapForServer } from './component-map-for-server.conversion';
@@ -97,6 +98,23 @@ export const useUai = <COMPONENT_MAP extends ComponentMap>(
           output: undefined,
         });
       }
+    },
+    sendAutomaticallyWhen: ({ messages }) => {
+      const lastAssistantMessage = messages[messages.length - 1];
+      if (lastAssistantMessage.role !== 'assistant') return false; // not an assistant message
+      const lastAssistantMessageToolCallPart =
+        lastAssistantMessage.parts[lastAssistantMessage.parts.length - 1];
+      if (!('toolCallId' in lastAssistantMessageToolCallPart)) return false; // not a tool call part
+
+      if (
+        lastAssistantMessageToolCallPart.state === 'output-available' &&
+        lastAssistantMessageToolCallPart.output !== undefined
+      ) {
+        // only resubmit if the tool call has an output
+        return true;
+      }
+      // otherwise its just a rendered component
+      return false;
     },
   });
 
