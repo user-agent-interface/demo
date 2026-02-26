@@ -99,12 +99,12 @@ export const Map = ({
         <button className="flex h-6 w-6 items-center justify-center transition-all duration-300 hover:scale-125 hover:cursor-pointer">
           <div className="relative">
             <div
-              className={`absolute -inset-2 animate-ping rounded-full ${bgColor}/30`}
+              className={`absolute -inset-2 animate-ping rounded-full ${bgColor}`}
             />
             <div
-              className={`relative h-4 w-4 rounded-full border-2 ${borderColor} ${bgColor}/50`}
+              className={`relative h-4 w-4 rounded-full border-2 ${borderColor}`}
             >
-              <div className={`absolute inset-0 rounded-full ${bgColor}/30`} />
+              <div className={`absolute inset-0 rounded-full ${bgColor}`} />
             </div>
           </div>
         </button>

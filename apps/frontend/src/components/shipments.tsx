@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '../utils/api';
 import type { Shipment } from '@uai/shared';
-import { Map as ShipmentsMap, Marker } from './map';
+import { Map, Marker } from './map';
 
 export function Shipments({
   displayType,
@@ -34,10 +34,10 @@ export function Shipments({
           : 'border-accent';
 
       const bgColor = isDelivered
-        ? 'bg-green-500'
+        ? 'bg-green-500/30'
         : isDelayed
-          ? 'bg-red-500'
-          : 'bg-accent';
+          ? 'bg-red-500/30'
+          : 'bg-accent/30';
 
       const position = shipment.actualPosition || shipment.origin.position;
 
@@ -89,7 +89,7 @@ export function Shipments({
           </div>
         )}
 
-        <ShipmentsMap
+        <Map
           initial={{ position: [16.37, 48.21], zoom: 9 }} // Vienna, Austria
           markers={markers}
           loading={isShipmentsLoading ? 'Loading shipments…' : undefined}
