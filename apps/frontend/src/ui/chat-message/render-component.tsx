@@ -20,7 +20,7 @@ export function RenderComponent({
     logComponentRendered(componentProps);
     return (
       <div>
-        <div className="rounded-xl border border-border/50 bg-card/50 p-4 -m-4">
+        <div>
           {/* Component's Type is the Union of all possible components from componentMap,
         while componentProps Type is the Union of all possible componentProps from componentMap.
         @ts-expect-error - TypeScript cannot infer the match between the two types */}

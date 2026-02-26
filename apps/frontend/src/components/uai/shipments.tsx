@@ -14,7 +14,7 @@ export const shipments = component({
       .default('inTransit'),
   }),
   component: function Shipments({
-    displayType: _displayType,
+    displayType,
     filter,
   }: {
     displayType: 'map' | 'list';
@@ -85,23 +85,114 @@ export const shipments = component({
 
     const hasError = error !== undefined;
 
+    if (displayType === 'map') {
+      return (
+        <div className="relative">
+          {hasError && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-muted/80 backdrop-blur-sm">
+              <div className="flex flex-col items-center gap-3">
+                <span className="text-sm font-medium text-destructive">
+                  Failed to load shipments
+                </span>
+              </div>
+            </div>
+          )}
+
+          <ShipmentsMap
+            initial={{ position: [16.37, 48.21], zoom: 9 }} // Vienna, Austria
+            markers={markers}
+            loading={isShipmentsLoading ? 'Loading shipments…' : undefined}
+          />
+        </div>
+      );
+    }
+
+    const isListLoading = isShipmentsLoading && !shipments;
+
     return (
       <div className="relative">
-        {hasError && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-muted/80 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-3">
-              <span className="text-sm font-medium text-destructive">
-                Failed to load shipments
-              </span>
+        <div className="overflow-hidden rounded-lg border bg-card">
+          {hasError ? (
+            <div className="p-4 text-sm font-medium text-destructive">
+              Failed to load shipments
             </div>
-          </div>
-        )}
+          ) : isListLoading ? (
+            <div className="p-4 text-sm text-muted-foreground">
+              Loading shipments…
+            </div>
+          ) : !shipments || shipments.length === 0 ? (
+            <div className="p-4 text-sm text-muted-foreground">
+              No shipments found.
+            </div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-xs uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-3 text-left">Shipment</th>
+                  <th className="px-4 py-3 text-left">State</th>
+                  <th className="px-4 py-3 text-left">Route</th>
+                  <th className="px-4 py-3 text-left">ETA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shipments.map((shipment) => {
+                  const isDelivered = shipment.state.includes('delivered');
+                  const isDelayed = shipment.state.includes('delayed');
 
-        <ShipmentsMap
-          initial={{ position: [16.37, 48.21], zoom: 9 }} // Vienna, Austria
-          markers={markers}
-          loading={isShipmentsLoading ? 'Loading shipments…' : undefined}
-        />
+                  const statusClasses = isDelivered
+                    ? 'bg-green-500/10 text-green-500 border border-green-500/20'
+                    : isDelayed
+                      ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+                      : 'bg-accent/10 text-accent-foreground border border-accent/20';
+
+                  return (
+                    <tr
+                      key={shipment.id}
+                      className="border-t border-border/60 hover:bg-muted/50"
+                    >
+                      <td className="px-4 py-3 align-top">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-medium text-foreground">
+                            Shipment {shipment.id}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {shipment.origin.city}, {shipment.origin.country} →{' '}
+                            {shipment.destination.city},{' '}
+                            {shipment.destination.country}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 align-top">
+                        <div
+                          className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${statusClasses}`}
+                        >
+                          {shipment.state.join(', ')}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 align-top text-sm text-muted-foreground">
+                        <div className="flex flex-col gap-0.5">
+                          <span>
+                            From: {shipment.origin.city},{' '}
+                            {shipment.origin.country}
+                          </span>
+                          <span>
+                            To: {shipment.destination.city},{' '}
+                            {shipment.destination.country}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 align-top text-sm">
+                        <span className="text-foreground">
+                          {formatEta(shipment.estimatedDeliveryDate)}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     );
   },
