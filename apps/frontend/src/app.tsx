@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ChatMessages } from './ui/chat-message/chat-messages';
 import { ChatHeader } from './ui/header';
 import { ChatInput } from './ui/chat-input';
@@ -24,6 +24,14 @@ export function App() {
 
   const agentAnswerInProgress =
     status === 'streaming' || status === 'submitted';
+
+  const waitingForComponentOutput = useMemo(() => {
+    const lastMessage = messages[messages.length - 1];
+    return lastMessage.parts.some(
+      (part) =>
+        part.type === 'render-component' && part.state !== 'output-available'
+    );
+  }, [messages]);
 
   const handleSendMessage = useCallback(
     async (text: string) => await sendMessage(text),
@@ -65,7 +73,7 @@ export function App() {
           {/* Chat Input */}
           <ChatInput
             onSendMessage={handleSendMessage}
-            agentAnswerInProgress={agentAnswerInProgress}
+            disabled={agentAnswerInProgress || waitingForComponentOutput}
           />
         </div>
       </div>

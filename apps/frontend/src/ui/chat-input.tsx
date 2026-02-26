@@ -1,16 +1,16 @@
 'use client';
 
 import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
-import { Send, Paperclip, Mic, Sparkles } from 'lucide-react';
+import { Send, Sparkles } from 'lucide-react';
 import { Button } from '@/ui/button';
 import { cn } from '@/utils/cn';
 
 export function ChatInput({
   onSendMessage,
-  agentAnswerInProgress,
+  disabled,
 }: {
   onSendMessage: (text: string) => void;
-  agentAnswerInProgress: boolean;
+  disabled?: boolean;
 }) {
   const [input, setInput] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -27,7 +27,7 @@ export function ChatInput({
   }, [input]);
 
   const handleSubmit = () => {
-    if (input.trim() && !agentAnswerInProgress) {
+    if (input.trim() && !disabled) {
       onSendMessage(input.trim());
       setInput('');
     }
@@ -73,15 +73,6 @@ export function ChatInput({
               : 'border-border/50'
           )}
         >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
-          >
-            <Paperclip className="h-4 w-4" />
-            <span className="sr-only">Attach file</span>
-          </Button>
-
           <textarea
             ref={textareaRef}
             value={input}
@@ -90,26 +81,18 @@ export function ChatInput({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             placeholder="Enter your query..."
-            className="max-h-[120px] min-h-[40px] flex-1 resize-none bg-transparent py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+            className="max-h-[120px] min-h-[40px] flex-1 resize-none bg-transparent py-2 pl-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             rows={1}
+            disabled={disabled}
           />
 
           <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
-          >
-            <Mic className="h-4 w-4" />
-            <span className="sr-only">Voice input</span>
-          </Button>
-
-          <Button
             onClick={handleSubmit}
-            disabled={!input.trim() || agentAnswerInProgress}
+            disabled={!input.trim() || disabled}
             size="icon"
             className={cn(
               'h-9 w-9 shrink-0 rounded-xl transition-all',
-              input.trim() && !agentAnswerInProgress
+              input.trim() && !disabled
                 ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(0,255,200,0.3)]'
                 : 'bg-secondary text-muted-foreground'
             )}
