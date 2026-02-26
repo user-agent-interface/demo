@@ -7,9 +7,11 @@ import { Map, Marker } from './map';
 export function Shipments({
   displayType,
   filter,
+  onSelect,
 }: {
   displayType: 'map' | 'list';
   filter: 'inTransit' | 'delayed' | 'delivered';
+  onSelect?: (shipment: Shipment) => void;
 }) {
   const {
     data: shipments,
@@ -21,7 +23,7 @@ export function Shipments({
   });
 
   const markers = useMemo<Marker[]>(() => {
-    if (!shipments) return [];
+    if (displayType === 'list' || !shipments) return [];
 
     return shipments.map((shipment) => {
       const isDelivered = shipment.state.includes('delivered');
@@ -62,6 +64,17 @@ export function Shipments({
             <span className="font-medium">ETA:</span>{' '}
             {formatEta(shipment.estimatedDeliveryDate)}
           </div>
+          {onSelect && (
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                onClick={() => onSelect(shipment)}
+              >
+                Select
+              </button>
+            </div>
+          )}
         </div>
       );
 
@@ -72,7 +85,7 @@ export function Shipments({
         popup,
       };
     });
-  }, [shipments]);
+  }, [displayType, shipments, onSelect]);
 
   const hasError = error !== undefined;
 
@@ -123,6 +136,7 @@ export function Shipments({
                 <th className="px-4 py-3 text-left">State</th>
                 <th className="px-4 py-3 text-left">Route</th>
                 <th className="px-4 py-3 text-left">ETA</th>
+                {onSelect && <th className="px-4 py-3 text-right"></th>}
               </tr>
             </thead>
             <tbody>
@@ -177,6 +191,17 @@ export function Shipments({
                         {formatEta(shipment.estimatedDeliveryDate)}
                       </span>
                     </td>
+                    {onSelect && (
+                      <td className="px-4 py-3 align-top text-right">
+                        <button
+                          type="button"
+                          className="inline-flex items-center rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          onClick={() => onSelect(shipment)}
+                        >
+                          Select
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
