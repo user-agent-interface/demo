@@ -1,16 +1,17 @@
-import { UAITextMessage } from '@uai/client';
-import { componentMap } from '../../components/uai/component-map';
+import { TextUIPart } from '@uai/client';
 import { cn } from '../../utils/cn';
 import { Bot, User } from 'lucide-react';
 import { formatChatMessageTimestamp } from './chat-message-timestamp';
 
 export function TextMessageBubble({
-  message,
+  isAssistant,
+  timestamp,
+  textPart,
 }: {
-  message: UAITextMessage<typeof componentMap>;
+  isAssistant: boolean;
+  timestamp: string;
+  textPart: TextUIPart;
 }) {
-  const isAssistant = message.role === 'assistant';
-
   return (
     <div>
       <div
@@ -33,7 +34,7 @@ export function TextMessageBubble({
           )}
         >
           <p className="whitespace-pre-wrap text-sm leading-relaxed">
-            {message.text.text}
+            {textPart.text}
           </p>
         </div>
 
@@ -49,7 +50,7 @@ export function TextMessageBubble({
           isAssistant ? 'ml-15' : 'mr-15 text-right'
         )}
       >
-        {formatChatMessageTimestamp(message.timestamp)}
+        {formatChatMessageTimestamp(timestamp)}
       </p>
     </div>
   );

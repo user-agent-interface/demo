@@ -31,11 +31,11 @@ export function useLogOnce(key: string, message: string) {
 
   return useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (object?: any) => {
+    (...object: any[]) => {
       if (hasLogged.current) return;
       hasLogged.current = true;
 
-      console.log(message, object);
+      console.log(message, ...object);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [key, message]

@@ -25,18 +25,33 @@ export function ChatMessages({
   return (
     <div ref={scrollContainerRef} className="h-full overflow-y-auto px-4 py-6">
       <div className="mx-auto max-w-3xl space-y-6">
-        {messages.map((message) => {
-          if (message.type === 'text')
-            // Text message
-            return <TextMessageBubble key={message.id} message={message} />;
+        {messages.map((message) =>
+          message.parts.map((part, partIndex) => {
+            if (part.type === 'text')
+              // Text message
+              return (
+                <TextMessageBubble
+                  key={`${message.id}-${partIndex}`}
+                  isAssistant={message.role === 'assistant'}
+                  timestamp={message.timestamp}
+                  textPart={part}
+                />
+              );
 
-          if (message.type === 'render-component') {
-            // Render component message
-            return <RenderComponent key={message.id} message={message} />;
-          }
+            if (part.type === 'render-component') {
+              // Render component message
+              return (
+                <RenderComponent
+                  key={`${message.id}-${partIndex}`}
+                  timestamp={message.timestamp}
+                  renderComponentPart={part}
+                />
+              );
+            }
 
-          return null;
-        })}
+            return null;
+          })
+        )}
 
         {agentAnswerInProgress && <TypingIndicator />}
         <div ref={messagesEndRef} />

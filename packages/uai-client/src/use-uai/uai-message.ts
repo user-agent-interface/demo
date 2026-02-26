@@ -38,32 +38,7 @@ export type UAIMessage<COMPONENT_MAP extends ComponentMap> = {
     | TextUIPart
     | ComponentRenderUIPart<COMPONENT_MAP>
   >;
-} &
-  // Textual message
-  (| {
-        type: 'text';
-        /**
-         * Text content of the message.
-         */
-        text: TextUIPart;
-      }
-
-    // Component render message
-    | {
-        type: 'render-component';
-        /**
-         * The component to be rendered.
-         */
-        renderComponent: ComponentRenderUIPart<COMPONENT_MAP>;
-      }
-
-    // Empty message
-    | { type: 'empty' }
-  );
-export type UAITextMessage<COMPONENT_MAP extends ComponentMap> =
-  UAIMessage<COMPONENT_MAP> & { type: 'text' };
-export type UAIRenderComponentMessage<COMPONENT_MAP extends ComponentMap> =
-  UAIMessage<COMPONENT_MAP> & { type: 'render-component' };
+};
 
 export type ComponentRenderUIPart<
   COMPONENT_MAP extends ComponentMap,
@@ -88,3 +63,5 @@ export type ComponentRenderUIPart<
           }
       )
   : never;
+
+export { type TextUIPart };

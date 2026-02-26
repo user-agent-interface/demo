@@ -1,23 +1,21 @@
-import { UAIRenderComponentMessage } from '@uai/client';
+import { ComponentRenderUIPart } from '@uai/client';
 import { componentMap } from '../../components/uai/component-map';
 import { formatChatMessageTimestamp } from './chat-message-timestamp';
-import { TypingIndicator } from './typing-indicator';
 import { useLogOnce } from '../../utils/use-log-once.hook';
 
 export function RenderComponent({
-  message: {
-    renderComponent: { componentId, componentProps, state },
-    timestamp,
-  },
+  timestamp,
+  renderComponentPart: { componentId, state, componentProps },
 }: {
-  message: UAIRenderComponentMessage<typeof componentMap>;
+  timestamp: string;
+  renderComponentPart: ComponentRenderUIPart<typeof componentMap>;
 }) {
   const logComponentRendered = useLogOnce(componentId, 'Component rendered.');
 
   if (state === 'input-available' || state === 'output-available') {
     const Component = componentMap[componentId].component;
 
-    logComponentRendered(componentProps);
+    logComponentRendered(componentId, componentProps);
     return (
       <div>
         <div>
@@ -31,9 +29,6 @@ export function RenderComponent({
         </p>
       </div>
     );
-  } else if (state === 'input-streaming') {
-    // IN FUTURE: Some component may have an input-streaming state, while the component can be partially rendered
-    return <TypingIndicator />;
   }
 
   return null;

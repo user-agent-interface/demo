@@ -101,40 +101,7 @@ export const convertAiSdkMessagesToUAIMessages = <
         return part as Exclude<typeof part, { type: `data-${string}` }>;
       });
 
-    const baseProps = { id, role, timestamp, parts };
-
-    if (originalParts.length === 0) {
-      // Empty message
-      return {
-        ...baseProps,
-        type: 'empty',
-      };
-    }
-
-    const textPart = parts.find((part) => part.type === 'text');
-    if (textPart) {
-      // Text message
-      return {
-        ...baseProps,
-        type: 'text',
-        text: textPart,
-      };
-    }
-
-    const componentRenderPart = parts.find(
-      (part) => part.type === 'render-component'
-    );
-    if (componentRenderPart) {
-      // Component render message
-      return {
-        ...baseProps,
-        type: 'render-component',
-        renderComponent: componentRenderPart,
-      };
-    }
-
-    // Filter out messages (by flatMap) that does not contain text or component render part (and is not empty)
-    return [];
+    return { id, role, timestamp, parts };
   });
 
 export const convertUAIMessagesToAiSdkMessages = <

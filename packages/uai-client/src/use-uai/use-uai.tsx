@@ -5,7 +5,6 @@ import {
   ChatOnFinishCallback,
   ChatStatus,
   DefaultChatTransport,
-  lastAssistantMessageIsCompleteWithToolCalls,
 } from 'ai';
 import { type ComponentMap } from '../component-map/component-map';
 import { convertComponentMapForServer } from './component-map-for-server.conversion';
