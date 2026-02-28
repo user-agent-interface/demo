@@ -41,10 +41,11 @@ export function ChatInput({
   };
 
   const suggestions = [
-    'Update a shipment',
     'Show the delayed shipments',
-    'Change the language to German',
+    'Update a shipment',
     'Sign out',
+    // in german: Change the language to German
+    'Sprache auf Deutsch ändern',
   ];
 
   return (

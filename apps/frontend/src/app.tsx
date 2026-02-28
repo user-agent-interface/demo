@@ -11,7 +11,7 @@ const initialMessages = defineInitialMessages([
   {
     id: 'initial',
     role: 'assistant',
-    text: 'Greetings, Operator!\nHow may I be of service today?',
+    text: "Welcome! This is a User Agent Interface demo — a different way to use apps.\n\nInstead of hunting for buttons and menus, you simply type what you want to do in your own words, like in a chat. I'll understand your request and help you get it done.\n\nThis demo is a simple logistics management app: you can ask to see your shipments, pick one to view or update its details, change the language of the interface, or sign out. You can type your request in the box below, or use the suggestions above it to get started quickly.",
   },
 ]);
 
