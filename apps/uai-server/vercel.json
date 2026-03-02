@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd ../.. && npx turbo run build --filter=@uai-demo/uai-server",
+  "buildCommand": "cd ../.. && npx turbo run build --filter=@uai/server",
   "builds": [
     {
       "src": "src/index.ts",
@@ -17,4 +17,3 @@
     "NODE_ENV": "production"
   }
 }
-

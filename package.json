@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "build:uai-server": "turbo run build --filter=@uai/server",
     "build:frontend": "turbo run build --filter=@uai-demo/frontend",
-    "build:uai-server": "turbo run build --filter=@uai-demo/uai-server",
     "build:api-db": "turbo run build --filter=@uai-demo/api-db",
     "lint": "turbo run lint",
     "clean": "turbo run clean",
