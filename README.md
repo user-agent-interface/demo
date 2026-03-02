@@ -1,192 +1,167 @@
-# UAI Demo Monorepo
+# User Agent Interface Demo
 
-A monorepo containing a React frontend (UAI client) and two Node.js backend APIs (UAI server and a database API).
+User Agent Interface (UAI) is an AI-powered interface pattern where you tell your app what you need in plain words and it shows you the right UI at the right time—rather than hunting for buttons and menus.  
+This repository contains a logistics management demo for UAI: a chat-first app where you can ask to see shipments, inspect details on a map, update their status, switch languages, or sign out, all by typing natural-language requests.
 
-## Structure
+> “What if you could simply tell your app what you need — in plain words — and it showed you the right thing?”  
+> This demo is a concrete answer to that question. Learn more at [futuristic.digital](https://www.futuristic.digital/#our-work) and try the live demo at [uai.futuristic.digital](https://uai.futuristic.digital/).
 
+## What this demo shows
+
+- Natural-language UX: type what you want to do (“show delayed shipments”, “update this shipment to delivered”, “change the interface language”) and the app responds with the right UI components.
+- AI-driven UI selection: an AI agent chooses from the set of predefined UI components (tools) and wires them up with the appropriate parameters.
+- Domain-focused example: a small logistics app with shipments, statuses, maps, and updates, backed by an in-memory API.
+- Production-style architecture: a split frontend, AI “UAI Server”, and API/DB service, close to how a real app would be structured.
+
+The initial chat message in the demo describes this experience to users and sets the scene for how to interact with the app.
+
+## Architecture overview
+
+This repo is a small monorepo managed with npm workspaces and Turbo, and it is split into:
+
+- **Open‑source UAI libraries**
+  - **`@uai/server`** – the UAI backend service that wraps the [Vercel AI SDK](https://github.com/vercel/ai) `ToolLoopAgent`. It:
+    - Accepts chat messages and a component map from the client.
+    - Turns components into AI tools and streams back UI messages describing what to render.
+    - Uses `openai/gpt-4o-mini` by default (api key is configured via `OPENAI_API_KEY`).
+  - **`@uai/client`** – a small client-side helper (exposed here via the `useUai` hook) that:
+    - Sends messages and the component map to `@uai/server`.
+    - Converts between the AI SDK’s message format and UAI-specific messages.
+    - Handles tool-call/output semantics so the host app can focus on rendering.
+  - **`@uai/shared`** – shared TypeScript types and schemas, used by both client and server.
+
+- **Demo applications in this repo**
+  - **`@uai-demo/frontend`** – React + Vite + Tailwind frontend that renders the chat experience and defines the set of UAI-driven components (lists, forms, map, language switcher, sign-out, etc.), integrating `@uai/client` as a third‑party dependency.
+  - **`@uai-demo/api-db`** – an Express API that exposes shipment data and stores everything in‑memory for the purposes of the demo. It is called only by `@uai-demo/frontend`; `@uai/server` never talks to it.
+
+Conceptually, the architecture looks like this:
+
+```text
+            (app's users)
+                  │
+                  ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │                   Demo logistics app                        │
+    ├─────────────────────────────────────────────────────────────┤
+    │    ┌──────────────────────┐                                 │
+    │    │  @uai-demo/api-db    │   ← demo backend API            |
+    │    └──────────────────────┘                                 │
+    │              ▲                                              │
+    │              │  HTTP API (shipments)            │
+    │              ▼                                              │
+    │    ┌──────────────────────┐                                 │
+    │    │  @uai-demo/frontend  │   ← demo frontend app           |
+    │    └──────────────────────┘                                 │
+    │              │  uses internally as dependency               │
+    │    ┌──────────────────────┐                                 │
+    │    │      @uai/client     │   ← UAI client library          |
+    │    └──────────────────────┘                                 │
+    └────────────  ▲  ────────────────────────────────────────────┘
+                   |
+                   │  HTTP API (chat + component map)
+                   │
+                   ▼
+    ┌──────────────────────┐
+    │      @uai/server     │   ← hosted UAI backend service (AI agent)
+    └──────────────────────┘
 ```
-uai-demo/
-├── apps/
-│   ├── frontend/      # React frontend app (UAI client)
-│   ├── uai-server/    # LLM + MCP server API (UAI server)
-│   └── api-db/        # Database API (API-DB)
-└── packages/          # Shared packages (if needed)
-```
 
-## Getting Started
+## Project structure
 
-### Prerequisites
+At a glance:
 
-- Node.js >= 18.0.0
-- npm >= 9.0.0
+- `apps/frontend` – UAI demo UI (chat, map, forms, shipments list, etc.).
+- `apps/api-db` – fake shipments demo API + in-memory DB (`/api/shipments`).
 
-### Installation
+- `apps/uai-server` – the AI-backed UAI Server (`/api/uai-server`).
+- `packages/uai-client` – `useUai` React hook and component-map helpers.
+- `packages/uai-shared` – shared UAI domain models and component-map types.
+
+## Getting started
+
+### Prerequisites for running the demo locally
+
+> You can also try the live demo at [uai.futuristic.digital](https://uai.futuristic.digital/).
+
+- Node.js ≥ 18
+- npm ≥ 9
+- An OpenAI-compatible API key for the model used by the UAI Server (`OPENAI_API_KEY` environment variable).
+- A Mapbox access token (`VITE_MAPBOX_ACCESS_TOKEN` environment variable).
+
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-### Development
+## Configuration
 
-Run all apps in development mode:
-
-```bash
-npm run dev
-```
-
-This will start:
-
-- Frontend: http://localhost:5173 (or configured port)
-- UAI-Server: http://localhost:3001
-- API-DB: http://localhost:3002
-
-### Build
-
-Build all apps:
-
-```bash
-npm run build
-```
-
-### Environment Variables
-
-1. Copy `.env.example` to `.env` in the root directory
-2. Configure environment variables for each app as needed
-3. Each app can also have its own `.env` file
-
-## Deployment
-
-This monorepo is configured for Vercel deployment. Each app will be deployed as a separate service.
-
-### Vercel Setup
-
-1. Connect your repository to Vercel
-2. Vercel will automatically detect the monorepo structure
-3. Configure each app in `vercel.json` or through Vercel dashboard
-
-## Apps
+The demo expects a few environment variables:
 
 ### Frontend (`apps/frontend`)
 
-React application built with UAI Client. Connects to both backend APIs.
+Create `apps/frontend/.env.local` with:
 
-**Tech Stack:**
+```bash
+VITE_UAI_SERVER_HOST_URL=http://localhost:3001
+VITE_UAI_DB_API_HOST_URL=http://localhost:3002/api
+VITE_MAPBOX_ACCESS_TOKEN=your_mapbox_access_token_here
+```
 
-- React 18
-- Vite
-- TypeScript
+- `VITE_UAI_SERVER_HOST_URL` – base URL of the UAI Server.
+- `VITE_UAI_DB_API_HOST_URL` – base URL of the API-DB service (the app appends `/shipments` etc.).
+- `VITE_MAPBOX_ACCESS_TOKEN` – Mapbox token from your Mapbox account; without it, map-based views will not work.
 
-**Endpoints:**
+### UAI Server (`apps/uai-server`)
 
-- Development: http://localhost:5173
+Create `apps/uai-server/.env.local` with at least your AI provider configuration, for example:
 
-### UAI-Server (`apps/uai-server`)
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+PORT=3001
+```
 
-Node.js API for interacting with LLMs using Vercel AI SDK and MCP servers.
-
-**Tech Stack:**
-
-- Express
-- Vercel AI SDK
-- TypeScript
-
-**Endpoints:**
-
-- Health: `GET /health`
-- LLM Chat: `POST /api/llm/chat`
-- MCP Execute: `POST /api/mcp/execute`
-- MCP Tools: `GET /api/mcp/tools`
-
-**Development:** http://localhost:3001
+The agent configuration (model, instructions) lives in `apps/uai-server/src/agent.ts`.
 
 ### API-DB (`apps/api-db`)
 
-Node.js API for database operations.
+Optionally, create `apps/api-db/.env.local` to override the default port:
 
-**Tech Stack:**
-
-- Express
-- TypeScript
-- (Database ORM to be added - Prisma/Drizzle recommended)
-
-**Endpoints:**
-
-- Health: `GET /health`
-- Users: `GET /api/users`
-- Create User: `POST /api/users`
-- Get User: `GET /api/users/:id`
-- Update User: `PUT /api/users/:id`
-- Delete User: `DELETE /api/users/:id`
-
-**Development:** http://localhost:3002
-
-## Project Structure
-
-```
-uai-demo/
-├── apps/
-│   ├── frontend/          # React frontend
-│   │   ├── src/
-│   │   │   ├── App.tsx
-│   │   │   ├── main.tsx
-│   │   │   └── index.css
-│   │   ├── package.json
-│   │   ├── vite.config.ts
-│   │   └── vercel.json
-│   ├── uai-server/        # LLM + MCP API
-│   │   ├── src/
-│   │   │   ├── index.ts
-│   │   │   └── routes/
-│   │   │       ├── llm.ts
-│   │   │       └── mcp.ts
-│   │   ├── package.json
-│   │   └── vercel.json
-│   └── api-db/            # Database API
-│       ├── src/
-│       │   ├── index.ts
-│       │   └── routes/
-│       │       └── db.ts
-│       ├── package.json
-│       └── vercel.json
-├── packages/              # Shared packages (future)
-├── package.json          # Root workspace config
-├── turbo.json            # Turborepo config
-├── tsconfig.json         # Root TypeScript config
-├── vercel.json           # Vercel monorepo config
-└── README.md
+```bash
+PORT=3002
 ```
 
-## Next Steps
+The database is an in-memory store seeded from static shipment data and is wiped on server restart.
 
-1. **Install Dependencies:**
+## Running the demo locally
 
-   ```bash
-   npm install
-   ```
+From the repo root:
 
-2. **Set Up Environment Variables:**
+```bash
+# Start all apps in dev mode via Turbo
+npm run dev
+```
 
-   - Create `.env` files in each app directory
-   - See `.env.example` for reference (create this file if needed)
+By default this will run:
 
-3. **Configure APIs:**
+- Frontend dev server (Vite) – usually on `http://localhost:5173`.
+- UAI Server – `http://localhost:3001` (see `/health` and `/api/uai-server`).
+- API-DB server – `http://localhost:3002` (see `/health` and `/api/shipments`).
 
-   - **UAI-Server**: Add your LLM provider SDK (e.g., `@ai-sdk/openai`)
-   - **API-DB**: Add your database ORM (e.g., Prisma, Drizzle)
+Open the frontend in your browser, read the initial assistant message, and start typing natural-language requests to explore shipments and the UI.
 
-4. **Start Development:**
+## Other scripts
 
-   ```bash
-   npm run dev
-   ```
+From the repo root:
 
-5. **Deploy to Vercel:**
-   - See `DEPLOYMENT.md` for detailed instructions
+- `npm run build` – build all apps and packages.
+- `npm run build:frontend` – build only the frontend.
+- `npm run build:uai-server` – build only the UAI Server.
+- `npm run build:api-db` – build only the API-DB.
+- `npm run lint` – run ESLint across the workspace.
+- `npm run type-check` – run TypeScript type checking.
 
-## Available Scripts
+## Learn more
 
-- `npm run dev` - Start all apps in development mode
-- `npm run build` - Build all apps
-- `npm run lint` - Lint all apps
-- `npm run type-check` - Type check all apps
-- `npm run clean` - Clean build artifacts
+- Product and concept overview: [futuristic.digital – User Agent Interface](https://www.futuristic.digital/#our-work)
+- Live demo: [uai.futuristic.digital](https://uai.futuristic.digital/)
