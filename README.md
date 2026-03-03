@@ -40,23 +40,23 @@ Conceptually, the architecture looks like this:
             (app's users)
                   │
                   ▼
-    ┌─────────────────────────────────────────────────────────────┐
-    │                   Demo logistics app                        │
-    ├─────────────────────────────────────────────────────────────┤
-    │    ┌──────────────────────┐                                 │
-    │    │  @uai-demo/api-db    │   ← demo backend API            |
-    │    └──────────────────────┘                                 │
-    │              ▲                                              │
-    │              │  HTTP API (shipments)            │
-    │              ▼                                              │
-    │    ┌──────────────────────┐                                 │
-    │    │  @uai-demo/frontend  │   ← demo frontend app           |
-    │    └──────────────────────┘                                 │
-    │              │  uses internally as dependency               │
-    │    ┌──────────────────────┐                                 │
-    │    │      @uai/client     │   ← UAI client library          |
-    │    └──────────────────────┘                                 │
-    └────────────  ▲  ────────────────────────────────────────────┘
+    ┌────────────────────────────────────────────────────────┐
+    │                   Demo logistics app                   │
+    ├────────────────────────────────────────────────────────┤
+    │    ┌──────────────────────┐                            │
+    │    │  @uai-demo/api-db    │   ← demo backend API       |
+    │    └──────────────────────┘                            │
+    │              ▲                                         │
+    │              │  HTTP API (shipments)                   │
+    │              ▼                                         │
+    │    ┌──────────────────────┐                            │
+    │    │  @uai-demo/frontend  │   ← demo frontend app      |
+    │    └──────────────────────┘                            │
+    │              │  uses internally as dependency          │
+    │    ┌──────────────────────┐                            │
+    │    │      @uai/client     │   ← UAI client library     |
+    │    └──────────────────────┘                            │
+    └────────────  ▲  ───────────────────────────────────────┘
                    |
                    │  HTTP API (chat + component map)
                    │
